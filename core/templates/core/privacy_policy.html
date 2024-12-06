@@ -1,0 +1,204 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Privacy Policy - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Privacy Policy Header -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">Privacy Policy</h1>
+                    <p class="text-muted text-center">Last updated: {% now "F j, Y" %}</p>
+                </div>
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Quick Navigation</h5>
+                    <div class="list-group">
+                        <a href="#information-collection" class="list-group-item list-group-item-action">
+                            Information Collection and Use
+                        </a>
+                        <a href="#data-sharing" class="list-group-item list-group-item-action">
+                            Data Sharing and Disclosure
+                        </a>
+                        <a href="#data-security" class="list-group-item list-group-item-action">
+                            Data Security
+                        </a>
+                        <a href="#user-rights" class="list-group-item list-group-item-action">
+                            Your Rights and Choices
+                        </a>
+                        <a href="#cookies" class="list-group-item list-group-item-action">
+                            Cookies and Tracking
+                        </a>
+                        <a href="#changes" class="list-group-item list-group-item-action">
+                            Changes to This Policy
+                        </a>
+                        <a href="#contact" class="list-group-item list-group-item-action">
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Introduction -->
+                    <div class="mb-5">
+                        <p class="lead">
+                            At Ubiglu Afro Mutation, we take your privacy seriously. This Privacy Policy explains how we 
+                            collect, use, disclose, and safeguard your information when you use our platform.
+                        </p>
+                    </div>
+
+                    <!-- Information Collection -->
+                    <section id="information-collection" class="mb-5">
+                        <h2 class="mb-4">Information Collection and Use</h2>
+                        
+                        <h5>Personal Information</h5>
+                        <p>We collect information that you provide directly to us, including:</p>
+                        <ul>
+                            <li>Name and contact information</li>
+                            <li>Account credentials</li>
+                            <li>Payment information</li>
+                            <li>Profile information</li>
+                            <li>Content you create, share, or post</li>
+                        </ul>
+
+                        <h5>Automatically Collected Information</h5>
+                        <p>When you use our platform, we automatically collect:</p>
+                        <ul>
+                            <li>Device information</li>
+                            <li>Log data</li>
+                            <li>Usage information</li>
+                            <li>Location information</li>
+                        </ul>
+                    </section>
+
+                    <!-- Data Sharing -->
+                    <section id="data-sharing" class="mb-5">
+                        <h2 class="mb-4">Data Sharing and Disclosure</h2>
+                        <p>We may share your information with:</p>
+                        <ul>
+                            <li>Service providers and partners</li>
+                            <li>Legal authorities when required</li>
+                            <li>Other users (as per your settings)</li>
+                        </ul>
+                        <p>We do not sell your personal information to third parties.</p>
+                    </section>
+
+                    <!-- Data Security -->
+                    <section id="data-security" class="mb-5">
+                        <h2 class="mb-4">Data Security</h2>
+                        <p>We implement appropriate security measures including:</p>
+                        <ul>
+                            <li>Encryption of sensitive data</li>
+                            <li>Regular security assessments</li>
+                            <li>Access controls</li>
+                            <li>Secure data storage</li>
+                        </ul>
+                    </section>
+
+                    <!-- User Rights -->
+                    <section id="user-rights" class="mb-5">
+                        <h2 class="mb-4">Your Rights and Choices</h2>
+                        <p>You have the right to:</p>
+                        <ul>
+                            <li>Access your personal information</li>
+                            <li>Correct inaccurate data</li>
+                            <li>Request deletion of your data</li>
+                            <li>Object to processing</li>
+                            <li>Data portability</li>
+                        </ul>
+                    </section>
+
+                    <!-- Cookies -->
+                    <section id="cookies" class="mb-5">
+                        <h2 class="mb-4">Cookies and Tracking</h2>
+                        <p>We use cookies and similar technologies to:</p>
+                        <ul>
+                            <li>Remember your preferences</li>
+                            <li>Understand platform usage</li>
+                            <li>Provide personalized content</li>
+                            <li>Improve our services</li>
+                        </ul>
+                    </section>
+
+                    <!-- Changes -->
+                    <section id="changes" class="mb-5">
+                        <h2 class="mb-4">Changes to This Policy</h2>
+                        <p>
+                            We may update this Privacy Policy from time to time. We will notify you of any changes by 
+                            posting the new Privacy Policy on this page and updating the "Last updated" date.
+                        </p>
+                    </section>
+
+                    <!-- Contact -->
+                    <section id="contact">
+                        <h2 class="mb-4">Contact Us</h2>
+                        <p>
+                            If you have any questions about this Privacy Policy, please contact us at:
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-envelope me-2"></i> privacy@ubigluafro.com</li>
+                            <li><i class="fas fa-phone me-2"></i> +1 (234) 567-890</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i> 123 Privacy Street, Security City, 12345</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="{% url 'core:contact' %}" class="btn btn-primary me-2">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+                <a href="{% url 'core:terms' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-file-alt"></i> Terms of Service
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Highlight current section in navigation
+    window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('section');
+        const navItems = document.querySelectorAll('.list-group-item');
+        
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href').slice(1) === currentSection) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>My Dashboard</h1>
+        <a href="{% url 'core:create_project' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create New Project
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-project-diagram fa-2x text-primary mb-3"></i>
+                    <h3>{{ user_projects.count }}</h3>
+                    <p class="text-muted mb-0">Total Projects</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-money-bill-wave fa-2x text-success mb-3"></i>
+                    <h3>${{ total_earnings|default:"0.00" }}</h3>
+                    <p class="text-muted mb-0">Total Earnings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <i class="fas fa-shopping-cart fa-2x text-info mb-3"></i>
+                    <h3>{{ total_sales|default:"0" }}</h3>
+                    <p class="text-muted mb-0">Total Sales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Table -->
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">My Projects</h5>
+        </div>
+        <div class="card-body">
+            {% if user_projects %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Price</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in user_projects %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if project.image %}
+                                    <img src="{{ project.image.url }}" alt="{{ project.title }}" 
+                                         class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="bg-light rounded" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-image text-muted m-2"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">{{ project.title }}</h6>
+                                        <small class="text-muted">{{ project.description|truncatechars:50 }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ project.category.name }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ project.status|lower }}">
+                                    {{ project.get_status_display }}
+                                </span>
+                            </td>
+                            <td>${{ project.price }}</td>
+                            <td>{{ project.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{% url 'core:project_detail' project.pk %}" 
+                                       class="btn btn-sm btn-outline-primary" 
+                                       data-bs-toggle="tooltip" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'core:edit_project' project.pk %}" 
+                                       class="btn btn-sm btn-outline-warning" 
+                                       data-bs-toggle="tooltip" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'core:delete_project' project.pk %}" 
+                                       class="btn btn-sm btn-outline-danger delete-project" 
+                                       data-bs-toggle="tooltip" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <img src="{% static 'core/images/empty-projects.svg' %}" alt="No projects" 
+                     style="width: 200px; height: 200px;" class="mb-4">
+                <h4>No Projects Yet</h4>
+                <p class="text-muted">Start by creating your first project!</p>
+                <a href="{% url 'core:create_project' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create Project
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Delete confirmation
+    document.querySelectorAll('.delete-project').forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

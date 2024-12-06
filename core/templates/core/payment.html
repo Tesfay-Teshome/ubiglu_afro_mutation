@@ -1,0 +1,295 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Purchase Project - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Project Summary -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex">
+                        {% if project.image %}
+                        <img src="{{ project.image.url }}" 
+                             alt="{{ project.title }}"
+                             class="rounded me-3"
+                             style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'core/images/default-project.jpg' %}" 
+                             alt="Default Project Image"
+                             class="rounded me-3"
+                             style="width: 100px; height: 100px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <h4 class="mb-1">{{ project.title }}</h4>
+                            <p class="text-muted mb-1">by {{ project.owner.username }}</p>
+                            <h5 class="text-primary mb-0">${{ project.price }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Payment Details</h4>
+                </div>
+                <div class="card-body">
+                    <form id="payment-form">
+                        {% csrf_token %}
+
+                        <!-- Card Element -->
+                        <div class="mb-4">
+                            <label class="form-label">Card Information</label>
+                            <div id="card-element" class="form-control" style="height: 2.4em; padding-top: .5em;"></div>
+                            <div id="card-errors" class="invalid-feedback d-block"></div>
+                        </div>
+
+                        <!-- Billing Information -->
+                        <h5 class="mb-3">Billing Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" value="{{ user.email }}" required>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Country</label>
+                                <select class="form-select" id="country" required>
+                                    <option value="">Select Country</option>
+                                    <!-- Add country options dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Postal Code</label>
+                                <input type="text" class="form-control" id="postalCode" required>
+                            </div>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="mb-3">Order Summary</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Project Price</span>
+                                    <span>${{ project.price }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Processing Fee</span>
+                                    <span>${{ processing_fee }}</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total</strong>
+                                    <strong>${{ total_amount }}</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:project_detail' project.pk %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Project
+                            </a>
+                            <button type="submit" class="btn btn-primary" id="submit-button">
+                                <i class="fas fa-lock"></i> Pay Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Processing Payment Modal -->
+<div class="modal fade" id="processingPaymentModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Processing payment...</span>
+                </div>
+                <h5>Processing Payment</h5>
+                <p class="text-muted mb-0">Please do not close this window...</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Initialize Stripe
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+
+    // Create card Element
+    const card = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#32325d',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#dc3545',
+                iconColor: '#dc3545'
+            }
+        }
+    });
+
+    // Mount card Element
+    card.mount('#card-element');
+
+    // Handle validation errors
+    card.addEventListener('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Disable submit button
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true;
+
+        // Show processing modal
+        const processingModal = new bootstrap.Modal(document.getElementById('processingPaymentModal'));
+        processingModal.show();
+
+        // Create payment method
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: card,
+            billing_details: {
+                name: document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                address: {
+                    line1: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    country: document.getElementById('country').value,
+                    postal_code: document.getElementById('postalCode').value
+                }
+            }
+        }).then(function(result) {
+            if (result.error) {
+                // Handle errors
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                submitButton.disabled = false;
+                processingModal.hide();
+            } else {
+                // Send payment method ID to server
+                fetch('{% url "core:process_payment" project.pk %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        payment_method_id: result.paymentMethod.id,
+                        email: document.getElementById('email').value
+                    })
+                }).then(function(response) {
+                    return response.json();
+                }).then(function(data) {
+                    if (data.requires_action) {
+                        // Handle 3D Secure authentication
+                        stripe.handleCardAction(data.payment_intent_client_secret)
+                            .then(function(result) {
+                                if (result.error) {
+                                    // Handle error
+                                    const errorElement = document.getElementById('card-errors');
+                                    errorElement.textContent = result.error.message;
+                                    submitButton.disabled = false;
+                                    processingModal.hide();
+                                } else {
+                                    // Confirm payment
+                                    confirmPayment(result.paymentIntent.id);
+                                }
+                            });
+                    } else if (data.success) {
+                        // Payment successful
+                        window.location.href = data.redirect_url;
+                    } else {
+                        // Handle error
+                        const errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = data.error;
+                        submitButton.disabled = false;
+                        processingModal.hide();
+                    }
+                });
+            }
+        });
+    });
+
+    function confirmPayment(paymentIntentId) {
+        fetch('{% url "core:confirm_payment" project.pk %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                payment_intent_id: paymentIntentId
+            })
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = data.error;
+                submitButton.disabled = false;
+                processingModal.hide();
+            }
+        });
+    }
+
+    // Populate countries dropdown
+    const countries = [
+        {code: 'US', name: 'United States'},
+        {code: 'GB', name: 'United Kingdom'},
+        {code: 'CA', name: 'Canada'},
+        // Add more countries as needed
+    ];
+
+    const countrySelect = document.getElementById('country');
+    countries.forEach(country => {
+        const option = document.createElement('option');
+        option.value = country.code;
+        option.textContent = country.name;
+        countrySelect.appendChild(option);
+    });
+</script>
+{% endblock %}

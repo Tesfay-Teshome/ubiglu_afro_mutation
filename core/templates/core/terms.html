@@ -1,0 +1,211 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Terms of Service - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Terms Header -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">Terms of Service</h1>
+                    <p class="text-muted text-center">Last updated: {% now "F j, Y" %}</p>
+                </div>
+            </div>
+
+            <!-- Quick Navigation -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">Quick Navigation</h5>
+                    <div class="list-group">
+                        <a href="#acceptance" class="list-group-item list-group-item-action">
+                            Acceptance of Terms
+                        </a>
+                        <a href="#account" class="list-group-item list-group-item-action">
+                            Account Registration and Security
+                        </a>
+                        <a href="#content" class="list-group-item list-group-item-action">
+                            User Content and Conduct
+                        </a>
+                        <a href="#payments" class="list-group-item list-group-item-action">
+                            Payments and Transactions
+                        </a>
+                        <a href="#intellectual-property" class="list-group-item list-group-item-action">
+                            Intellectual Property Rights
+                        </a>
+                        <a href="#liability" class="list-group-item list-group-item-action">
+                            Limitation of Liability
+                        </a>
+                        <a href="#termination" class="list-group-item list-group-item-action">
+                            Account Termination
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="card">
+                <div class="card-body">
+                    <!-- Introduction -->
+                    <div class="mb-5">
+                        <p class="lead">
+                            These Terms of Service ("Terms") govern your access to and use of Ubiglu Afro Mutation's 
+                            platform, services, and features. Please read these Terms carefully before using our platform.
+                        </p>
+                    </div>
+
+                    <!-- Acceptance -->
+                    <section id="acceptance" class="mb-5">
+                        <h2 class="mb-4">1. Acceptance of Terms</h2>
+                        <p>
+                            By accessing or using our platform, you agree to be bound by these Terms. If you do not 
+                            agree to these Terms, do not use our platform.
+                        </p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            These Terms may be updated from time to time. We will notify you of any material changes.
+                        </div>
+                    </section>
+
+                    <!-- Account -->
+                    <section id="account" class="mb-5">
+                        <h2 class="mb-4">2. Account Registration and Security</h2>
+                        <h5>2.1 Registration Requirements</h5>
+                        <p>To use certain features, you must:</p>
+                        <ul>
+                            <li>Be at least 18 years old</li>
+                            <li>Provide accurate information</li>
+                            <li>Maintain current contact information</li>
+                        </ul>
+
+                        <h5>2.2 Account Security</h5>
+                        <p>You are responsible for:</p>
+                        <ul>
+                            <li>Maintaining password confidentiality</li>
+                            <li>Restricting account access</li>
+                            <li>All activities under your account</li>
+                        </ul>
+                    </section>
+
+                    <!-- Content -->
+                    <section id="content" class="mb-5">
+                        <h2 class="mb-4">3. User Content and Conduct</h2>
+                        <h5>3.1 Content Guidelines</h5>
+                        <p>You agree not to post content that:</p>
+                        <ul>
+                            <li>Violates any laws or regulations</li>
+                            <li>Infringes on others' rights</li>
+                            <li>Is harmful, fraudulent, or deceptive</li>
+                            <li>Contains malware or viruses</li>
+                        </ul>
+
+                        <h5>3.2 Content License</h5>
+                        <p>
+                            By posting content, you grant us a non-exclusive, worldwide license to use, store, display, 
+                            and distribute your content.
+                        </p>
+                    </section>
+
+                    <!-- Payments -->
+                    <section id="payments" class="mb-5">
+                        <h2 class="mb-4">4. Payments and Transactions</h2>
+                        <h5>4.1 Payment Terms</h5>
+                        <ul>
+                            <li>All payments are processed securely</li>
+                            <li>Prices are in USD unless specified</li>
+                            <li>Refunds are subject to our refund policy</li>
+                        </ul>
+
+                        <h5>4.2 Transaction Fees</h5>
+                        <p>
+                            We may charge processing fees for transactions. These fees will be clearly displayed 
+                            before purchase.
+                        </p>
+                    </section>
+
+                    <!-- Intellectual Property -->
+                    <section id="intellectual-property" class="mb-5">
+                        <h2 class="mb-4">5. Intellectual Property Rights</h2>
+                        <p>
+                            All platform content, features, and functionality are owned by Ubiglu Afro Mutation and 
+                            are protected by intellectual property laws.
+                        </p>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Unauthorized use of our intellectual property is strictly prohibited.
+                        </div>
+                    </section>
+
+                    <!-- Liability -->
+                    <section id="liability" class="mb-5">
+                        <h2 class="mb-4">6. Limitation of Liability</h2>
+                        <p>
+                            To the maximum extent permitted by law, we shall not be liable for any indirect, 
+                            incidental, special, consequential, or punitive damages.
+                        </p>
+                    </section>
+
+                    <!-- Termination -->
+                    <section id="termination">
+                        <h2 class="mb-4">7. Account Termination</h2>
+                        <p>We may terminate or suspend your account if you:</p>
+                        <ul>
+                            <li>Violate these Terms</li>
+                            <li>Provide false information</li>
+                            <li>Engage in fraudulent activity</li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="{% url 'core:privacy_policy' %}" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-shield-alt"></i> Privacy Policy
+                </a>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Highlight current section in navigation
+    window.addEventListener('scroll', function() {
+        const sections = document.querySelectorAll('section');
+        const navItems = document.querySelectorAll('.list-group-item');
+        
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('href').slice(1) === currentSection) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
+{% endblock %}

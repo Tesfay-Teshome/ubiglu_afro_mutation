@@ -1,0 +1,112 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit Project{% else %}Create Project{% endif %} - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">{% if form.instance.pk %}Edit Project{% else %}Create New Project{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Image Preview -->
+                        <div class="text-center mb-4">
+                            {% if form.instance.image %}
+                            <img id="image-preview" src="{{ form.instance.image.url }}" 
+                                 alt="Project Image" class="img-fluid rounded" style="max-height: 300px;">
+                            {% else %}
+                            <img id="image-preview" src="{% static 'core/images/default-project.jpg' %}" 
+                                 alt="Default Project Image" class="img-fluid rounded" style="max-height: 300px;">
+                            {% endif %}
+                        </div>
+
+                        <!-- Form Fields -->
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                {{ form.title|as_crispy_field }}
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                {{ form.description|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.category|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.price|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.status|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.image|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 
+                                {% if form.instance.pk %}Update{% else %}Create{% endif %} Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Image preview functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.querySelector('#id_image');
+        const imagePreview = document.querySelector('#image-preview');
+        
+        if (imageInput && imagePreview) {
+            imageInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Form validation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        });
+
+        // Price formatting
+        const priceInput = document.querySelector('#id_price');
+        if (priceInput) {
+            priceInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    this.value = value.toFixed(2);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

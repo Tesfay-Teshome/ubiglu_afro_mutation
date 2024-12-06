@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="error-page">
+                <img src="{% static 'core/images/404.svg' %}" alt="404 Error" 
+                     class="img-fluid mb-4" style="max-width: 400px;">
+                <h1 class="display-4 mb-4">Oops! Page Not Found</h1>
+                <p class="lead mb-4">The page you're looking for doesn't exist or has been moved.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="javascript:history.back()" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </a>
+                    <a href="{% url 'core:home' %}" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Return Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suggested Links -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <h5 class="text-center mb-4">You might be interested in:</h5>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-search fa-2x text-primary mb-3"></i>
+                            <h5>Browse Projects</h5>
+                            <p class="mb-0">Discover amazing projects from our creators.</p>
+                            <a href="{% url 'core:home' %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plus-circle fa-2x text-primary mb-3"></i>
+                            <h5>Create Project</h5>
+                            <p class="mb-0">Share your own project with the world.</p>
+                            <a href="{% url 'core:create_project' %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <i class="fas fa-question-circle fa-2x text-primary mb-3"></i>
+                            <h5>Help Center</h5>
+                            <p class="mb-0">Find answers to common questions.</p>
+                            <a href="{% url 'core:faq' %}" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

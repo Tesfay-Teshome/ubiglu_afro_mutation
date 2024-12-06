@@ -1,0 +1,225 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}FAQ - Ubiglu Afro Mutation{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- FAQ Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4">Frequently Asked Questions</h1>
+                <p class="lead text-muted">Find answers to common questions about Ubiglu Afro Mutation</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="faq-search" class="form-control" placeholder="Search FAQs...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Categories -->
+            <div class="mb-4">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-primary active" data-category="all">All</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="general">General</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="account">Account</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="projects">Projects</button>
+                    <button type="button" class="btn btn-outline-primary" data-category="payments">Payments</button>
+                </div>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="accordion" id="faqAccordion">
+                <!-- General Questions -->
+                <div class="faq-category" data-category="general">
+                    <h3 class="mb-3">General Questions</h3>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                What is Ubiglu Afro Mutation?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Ubiglu Afro Mutation is a digital asset management and project collaboration platform that helps creators showcase and monetize their work while connecting with others in the community.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                How can I get started?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Getting started is easy! Simply create an account, complete your profile, and start uploading your projects. Our platform guides you through each step of the process.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Questions -->
+                <div class="faq-category" data-category="account">
+                    <h3 class="mb-3 mt-4">Account & Profile</h3>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How do I change my password?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can change your password by going to your profile settings. Click on your profile picture, select "Settings," and choose "Change Password."
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                Can I have multiple accounts?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We recommend maintaining only one account per user. This helps maintain transparency and trust within our community.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Questions -->
+                <div class="faq-category" data-category="projects">
+                    <h3 class="mb-3 mt-4">Projects & Content</h3>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                What types of projects can I share?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can share various types of digital assets including designs, artwork, templates, and creative projects. All content must comply with our content guidelines.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                How do I protect my intellectual property?
+                            </button>
+                        </h2>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We take intellectual property rights seriously. You can watermark your previews, set usage terms, and choose appropriate licenses for your work.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Questions -->
+                <div class="faq-category" data-category="payments">
+                    <h3 class="mb-3 mt-4">Payments & Transactions</h3>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                                What payment methods do you accept?
+                            </button>
+                        </h2>
+                        <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We accept major credit cards, debit cards, and various digital payment methods through our secure payment processor, Stripe.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                                How do refunds work?
+                            </button>
+                        </h2>
+                        <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Refund requests are handled on a case-by-case basis. Please contact our support team within 14 days of purchase if you experience any issues.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Still Have Questions -->
+            <div class="card mt-5">
+                <div class="card-body text-center">
+                    <h4>Still Have Questions?</h4>
+                    <p class="mb-4">Can't find the answer you're looking for? Please contact our support team.</p>
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary">
+                        <i class="fas fa-envelope me-2"></i>Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search functionality
+    const searchInput = document.getElementById('faq-search');
+    const accordionItems = document.querySelectorAll('.accordion-item');
+
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        accordionItems.forEach(item => {
+            const question = item.querySelector('.accordion-button').textContent.toLowerCase();
+            const answer = item.querySelector('.accordion-body').textContent.toLowerCase();
+            
+            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Category filtering
+    const categoryButtons = document.querySelectorAll('[data-category]');
+    const faqCategories = document.querySelectorAll('.faq-category');
+
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show/hide categories
+            faqCategories.forEach(cat => {
+                if (category === 'all' || cat.dataset.category === category) {
+                    cat.style.display = '';
+                } else {
+                    cat.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Account Settings - {{ user.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Account Settings Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Account Settings</h4>
+                    
+                    <!-- Basic Information -->
+                    <div class="mb-4">
+                        <h5>Basic Information</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Email</p>
+                                <p class="mb-0">{{ user.email }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-muted">Username</p>
+                                <p class="mb-0">{{ user.username }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connected Accounts -->
+                    <div class="mb-4">
+                        <h5>Connected Accounts</h5>
+                        <p class="text-muted mb-3">Connect your accounts for easier login and enhanced features.</p>
+                        
+                        <!-- Google Account -->
+                        <div class="d-flex align-items-center justify-content-between mb-3 p-3 border rounded">
+                            <div class="d-flex align-items-center">
+                                <img src="{% static 'core/images/google-icon.png' %}" alt="Google" width="24" height="24" class="me-3">
+                                <div>
+                                    <h6 class="mb-0">Google</h6>
+                                    {% with google_account=social_accounts|selectattr:"provider","equalto","google"|first %}
+                                    {% if google_account %}
+                                        <small class="text-muted">Connected as {{ google_account.extra_data.email }}</small>
+                                    {% else %}
+                                        <small class="text-muted">Not connected</small>
+                                    {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                            {% with google_account=social_accounts|selectattr:"provider","equalto","google"|first %}
+                            {% if google_account %}
+                                <form method="post" action="{% url 'socialaccount_connections' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="account" value="{{ google_account.id }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Disconnect</button>
+                                </form>
+                            {% else %}
+                                <a href="{% provider_login_url 'google' process='connect' %}" class="btn btn-outline-primary btn-sm">Connect</a>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="mb-4">
+                        <h5>Security</h5>
+                        <div class="list-group">
+                            <a href="{% url 'password_change' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Change Password
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                            <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                Email Settings
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone -->
+                    <div>
+                        <h5 class="text-danger">Danger Zone</h5>
+                        <div class="card border-danger">
+                            <div class="card-body">
+                                <h6 class="card-title">Delete Account</h6>
+                                <p class="card-text text-muted">Once you delete your account, there is no going back. Please be certain.</p>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <form method="post" action="{% url 'account_delete' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="confirmDelete" class="form-label">Type "DELETE" to confirm:</label>
+                        <input type="text" class="form-control" id="confirmDelete" required pattern="DELETE">
+                    </div>
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Project - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Edit Project</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="project-form">
+                        {% csrf_token %}
+                        
+                        <!-- Project Image -->
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                {% if project.image %}
+                                <img src="{{ project.image.url }}" 
+                                     alt="{{ project.title }}" 
+                                     id="project-image-preview"
+                                     class="img-fluid rounded"
+                                     style="max-width: 300px; max-height: 200px; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'core/images/default-project.jpg' %}" 
+                                     alt="Project Image Preview" 
+                                     id="project-image-preview"
+                                     class="img-fluid rounded"
+                                     style="max-width: 300px; max-height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <label for="{{ form.image.id_for_label }}" 
+                                       class="btn btn-sm btn-primary position-absolute bottom-0 end-0"
+                                       style="cursor: pointer;">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                            </div>
+                            <input type="file" 
+                                   name="{{ form.image.name }}" 
+                                   id="{{ form.image.id_for_label }}" 
+                                   class="d-none"
+                                   accept="image/*"
+                                   onchange="previewProjectImage(this);">
+                            {% if form.image.errors %}
+                            <div class="text-danger mt-2">
+                                {{ form.image.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Basic Information -->
+                        <h5 class="mb-3">Basic Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-12 mb-3">
+                                {{ form.title|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.category|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.price|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.description|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Project Details -->
+                        <h5 class="mb-3">Project Details</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                {{ form.status|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.visibility|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.tags|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <h5 class="mb-3">Additional Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                {{ form.additional_info|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:project_detail' project.pk %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Project
+                            </a>
+                            <div>
+                                <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteProjectModal">
+                                    <i class="fas fa-trash"></i> Delete Project
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Project Modal -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this project? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{% url 'core:delete_project' project.pk %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Project</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function previewProjectImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('project-image-preview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Initialize select2 for tags if available
+    if ($.fn.select2) {
+        $('#id_tags').select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            placeholder: 'Enter tags...',
+            theme: 'bootstrap-5'
+        });
+    }
+
+    // Form validation
+    document.getElementById('project-form').addEventListener('submit', function(e) {
+        var title = document.getElementById('id_title').value;
+        var description = document.getElementById('id_description').value;
+        var price = document.getElementById('id_price').value;
+        
+        if (!title || !description || !price) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+        }
+    });
+</script>
+{% endblock %}

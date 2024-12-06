@@ -1,0 +1,139 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Picture Preview -->
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                {% if user.profile.profile_picture %}
+                                <img src="{{ user.profile.profile_picture.url }}" 
+                                     alt="{{ user.username }}" 
+                                     id="profile-picture-preview"
+                                     class="rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'core/images/default-profile.png' %}" 
+                                     alt="Default Profile" 
+                                     id="profile-picture-preview"
+                                     class="rounded-circle"
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                                {% endif %}
+                                <label for="{{ form.profile_picture.id_for_label }}" 
+                                       class="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"
+                                       style="cursor: pointer;">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                            </div>
+                            <input type="file" 
+                                   name="{{ form.profile_picture.name }}" 
+                                   id="{{ form.profile_picture.id_for_label }}" 
+                                   class="d-none"
+                                   accept="image/*"
+                                   onchange="previewProfilePicture(this);">
+                            {% if form.profile_picture.errors %}
+                            <div class="text-danger mt-2">
+                                {{ form.profile_picture.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Personal Information -->
+                        <h5 class="mb-3">Personal Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name|as_crispy_field }}
+                            </div>
+                            <div class="col-12 mb-3">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.bio|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <h5 class="mb-3">Contact Information</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                {{ form.phone_number|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.country|as_crispy_field }}
+                            </div>
+                            <div class="col-12">
+                                {{ form.address|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Social Media Links -->
+                        <h5 class="mb-3">Social Media</h5>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                {{ form.website|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.github|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.twitter|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.linkedin|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Preferences -->
+                        <h5 class="mb-3">Preferences</h5>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                {{ form.preferences|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:profile' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Profile
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function previewProfilePicture(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-picture-preview').src = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}
