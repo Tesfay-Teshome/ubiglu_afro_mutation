@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" version="1.1" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+ <rect width="800" height="400" fill="#f8f9fa"/>
+ <g fill="#dee2e6">
+  <path d="m400 180-60 104h120z"/>
+  <circle cx="460" cy="160" r="20"/>
+ </g>
+ <text x="400" y="320" fill="#6c757d" font-family="Arial" font-size="24px" text-anchor="middle">Project Image</text>
+</svg>

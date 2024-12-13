@@ -17,8 +17,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 
-                 'password1', 'password2', 'terms_agreement')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -54,23 +53,36 @@ class UserProfileForm(forms.ModelForm):
     """Form for editing user profile information."""
     class Meta:
         model = UserProfile
-        fields = ['bio', 'avatar', 'website', 'location', 'skills', 
-                 'interests', 'social_github', 'social_twitter', 
-                 'social_linkedin', 'social_instagram']
+        fields = ['bio', 'avatar', 'phone_number', 'street_address', 'city', 'state', 'country', 'postal_code']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
-            'skills': forms.TextInput(attrs={'placeholder': 'Separate skills with commas'}),
-            'interests': forms.TextInput(attrs={'placeholder': 'Separate interests with commas'})
+            'avatar': forms.FileInput(attrs={'accept': 'image/*'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': '+1234567890'}),
+            'street_address': forms.TextInput(attrs={'placeholder': 'Enter your street address'}),
+            'city': forms.TextInput(attrs={'placeholder': 'Enter your city'}),
+            'state': forms.TextInput(attrs={'placeholder': 'Enter your state/province'}),
+            'country': forms.TextInput(attrs={'placeholder': 'Enter your country'}),
+            'postal_code': forms.TextInput(attrs={'placeholder': 'Enter your postal code'})
         }
 
 class ProjectForm(forms.ModelForm):
     """Form for creating and editing projects."""
     class Meta:
         model = Project
-        fields = ['title', 'description', 'category', 'image', 'status']
+        fields = ['title', 'description', 'category', 'price', 'image']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
+            'price': forms.NumberInput(attrs={'min': 0, 'step': 0.01}),
         }
+
+    def clean_price(self):
+        """Validate price."""
+        price = self.cleaned_data.get('price')
+        if price is None:
+            raise forms.ValidationError("Price is required.")
+        if price < 0:
+            raise forms.ValidationError("Price cannot be negative.")
+        return price
 
 class DigitalAssetForm(forms.ModelForm):
     """Form for uploading and editing digital assets."""

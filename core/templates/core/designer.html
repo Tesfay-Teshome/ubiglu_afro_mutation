@@ -1,0 +1,151 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}3D Clothing Designer - Ubiglu Afro{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'core/css/designer.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="designer-container">
+    <!-- Designer Toolbar -->
+    <div class="toolbar">
+        <div class="tool-section">
+            <h3>Garment Type</h3>
+            <select id="garmentType" class="form-select">
+                <option value="shirt">Shirt</option>
+                <option value="pants">Pants</option>
+                <option value="dress">Dress</option>
+                <option value="skirt">Skirt</option>
+            </select>
+        </div>
+
+        <div class="tool-section">
+            <h3>Fabric</h3>
+            <div class="fabric-grid">
+                {% for fabric in fabrics %}
+                <div class="fabric-item" data-fabric-id="{{ fabric.id }}"
+                     data-texture="{% static fabric.texture.url %}"
+                     style="background-image: url('{% static fabric.thumbnail.url %}')">
+                    <span class="fabric-name">{{ fabric.name }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h3>Colors</h3>
+            <div class="color-picker">
+                <input type="color" id="primaryColor" value="#ffffff">
+                <input type="color" id="secondaryColor" value="#000000">
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h3>Measurements</h3>
+            <div class="measurements-form">
+                <div class="mb-3">
+                    <label for="chest" class="form-label">Chest (cm)</label>
+                    <input type="number" class="form-control" id="chest" min="60" max="150">
+                </div>
+                <div class="mb-3">
+                    <label for="waist" class="form-label">Waist (cm)</label>
+                    <input type="number" class="form-control" id="waist" min="50" max="140">
+                </div>
+                <div class="mb-3">
+                    <label for="hips" class="form-label">Hips (cm)</label>
+                    <input type="number" class="form-control" id="hips" min="70" max="160">
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h3>Style Options</h3>
+            <div class="style-options">
+                <div class="mb-3">
+                    <label class="form-label">Sleeve Length</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="sleeves" id="short" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="short">Short</label>
+                        <input type="radio" class="btn-check" name="sleeves" id="long" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="long">Long</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Neckline</label>
+                    <select class="form-select" id="neckline">
+                        <option value="round">Round</option>
+                        <option value="v-neck">V-Neck</option>
+                        <option value="collar">Collar</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions mt-4">
+            <button class="btn btn-primary w-100 mb-2" id="saveDesign">
+                <i class="bi bi-save"></i> Save Design
+            </button>
+            <button class="btn btn-success w-100" id="orderDesign">
+                <i class="bi bi-cart"></i> Order Now
+            </button>
+        </div>
+    </div>
+
+    <!-- 3D Viewer -->
+    <div class="viewer">
+        <canvas id="designCanvas"></canvas>
+        <div class="viewer-controls">
+            <button class="btn btn-light" id="rotateLeft">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+            <button class="btn btn-light" id="resetView">
+                <i class="bi bi-aspect-ratio"></i>
+            </button>
+            <button class="btn btn-light" id="rotateRight">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Save Design Modal -->
+<div class="modal fade" id="saveDesignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Save Your Design</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="saveDesignForm">
+                    <div class="mb-3">
+                        <label for="designName" class="form-label">Design Name</label>
+                        <input type="text" class="form-control" id="designName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="designDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="designDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmSave">Save Design</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Three.js and related libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+
+<!-- Custom designer JavaScript -->
+<script src="{% static 'core/js/designer.js' %}"></script>
+{% endblock %}

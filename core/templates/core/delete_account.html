@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Delete Account - Ubiglu Afro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Delete Account</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h6 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Warning!</h6>
+                        <p class="mb-0">This action cannot be undone. Once you delete your account:</p>
+                        <ul class="mb-0 mt-2">
+                            <li>All your projects will be permanently deleted</li>
+                            <li>Your profile information will be removed</li>
+                            <li>You will lose access to all your data</li>
+                            <li>This action is irreversible</li>
+                        </ul>
+                    </div>
+
+                    <form method="post" id="delete-account-form">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Enter your password to confirm</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="form-text text-danger">
+                                Please type your password to confirm account deletion.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirm-delete" required>
+                                <label class="form-check-label" for="confirm-delete">
+                                    I understand that this action cannot be undone and all my data will be permanently deleted.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger" id="delete-button" disabled>
+                                <i class="fas fa-trash-alt me-2"></i>Delete Account
+                            </button>
+                            <a href="{% url 'core:settings' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.getElementById('confirm-delete').addEventListener('change', function() {
+        document.getElementById('delete-button').disabled = !this.checked;
+    });
+
+    document.getElementById('delete-account-form').addEventListener('submit', function(e) {
+        if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %}

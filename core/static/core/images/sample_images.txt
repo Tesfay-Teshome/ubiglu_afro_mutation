@@ -1,0 +1,14 @@
+Please add the following images to the core/static/core/images/ directory:
+
+1. logo.png - A modern, minimalist logo featuring "Ubiglu Afro" text with African patterns
+2. hero-image.png - A high-quality image showing 3D clothing design with African patterns
+3. default-project.jpg - A placeholder image for projects without images
+4. testimonial-1.jpg - Professional headshot of Sarah Johnson
+5. testimonial-2.jpg - Professional headshot of Michael Okonjo
+6. testimonial-3.jpg - Professional headshot of Amara Diallo
+7. favicon.png - A small icon version of the logo
+
+You can source these images from:
+- Unsplash.com (for high-quality, free-to-use images)
+- Pexels.com (for professional photos)
+- Or create custom images using design tools like Canva or Adobe Creative Suite

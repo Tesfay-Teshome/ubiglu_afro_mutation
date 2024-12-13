@@ -19,14 +19,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Base URL patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    path('accounts/', include('allauth.urls')),  
-    path('accounts/profile/', include('core.urls')),  
-    path('social-auth/', include('social_django.urls', namespace='social')),
-]
+    path('accounts/', include('allauth.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# Disable admin site HTTPS requirement
+admin.site.csrf_trusted_origins = ['http://localhost:8000', 'http://127.0.0.1:8000']
+
+# Custom error handlers
+handler404 = 'core.views.handler404'
+handler500 = 'core.views.handler500'

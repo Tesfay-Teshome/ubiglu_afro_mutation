@@ -84,22 +84,23 @@ class Category(models.Model):
 
 # Project
 class Project(models.Model):
-    """Project model for user projects."""
-    STATUS_CHOICES = [
+    """Model for user projects."""
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=20, choices=[
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('archived', 'Archived'),
-    ]
-
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    ], default='draft')
     image = models.ImageField(upload_to='project_images/', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    design_data = models.JSONField(null=True, blank=True)
+    measurements = models.JSONField(null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -141,11 +142,12 @@ class DigitalAsset(models.Model):
 
 # Fabric
 class Fabric(models.Model):
-    """Fabric model for textile materials."""
+    """Model for fabric designs."""
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     image = models.ImageField(upload_to='fabrics/', blank=True, null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='fabrics', null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     weight = models.DecimalField(max_digits=10, decimal_places=2)
     color = models.CharField(max_length=50)
@@ -155,7 +157,7 @@ class Fabric(models.Model):
     sheen = models.CharField(max_length=50, blank=True, null=True)
     scanned_data = models.JSONField(blank=True, null=True)  # Data from scanning technologies
     pbr_textures = models.JSONField(blank=True, null=True)  # For 3D visualization in Babylon.js
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -198,6 +200,24 @@ class OrderTracking(models.Model):
 
     def __str__(self):
         return f"Order {self.id} - Status: {self.status}"
+
+# Design
+class Design(models.Model):
+    """Model for storing user clothing designs."""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    measurements = models.JSONField(default=dict)
+    style_options = models.JSONField(default=dict)
+    thumbnail = models.TextField()  # Base64 encoded image
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} by {self.user.username}"
+
+    class Meta:
+        ordering = ['-created_at']
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

@@ -13,47 +13,55 @@ router.register(r'payments', views.PaymentViewSet)
 urlpatterns = [
     # Basic Views
     path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('profile/', views.profile, name='profile'),
+    path('settings/', views.settings, name='settings'),
     
     # Authentication Views
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
-    path('profile/', views.profile_view, name='profile'),
-    path('profile/settings/', views.profile_settings, name='profile_settings'),
+    
+    # Profile Views
     path('profile/edit/', views.edit_profile, name='edit_profile'),
-    path('accounts/delete/', views.delete_account, name='account_delete'),
+    path('account/delete/', views.delete_account, name='account_delete'),
     
     # Password Reset URLs
     path('password-reset/', 
         auth_views.PasswordResetView.as_view(
-            template_name='registration/password_reset_form.html'
+            template_name='core/auth/password_reset_form.html',
+            email_template_name='core/auth/password_reset_email.html',
+            subject_template_name='core/auth/password_reset_subject.txt'
         ),
         name='password_reset'
     ),
     path('password-reset/done/',
         auth_views.PasswordResetDoneView.as_view(
-            template_name='registration/password_reset_done.html'
+            template_name='core/auth/password_reset_done.html'
         ),
         name='password_reset_done'
     ),
     path('password-reset-confirm/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
-            template_name='registration/password_reset_confirm.html'
+            template_name='core/auth/password_reset_confirm.html'
         ),
         name='password_reset_confirm'
     ),
     path('password-reset-complete/',
         auth_views.PasswordResetCompleteView.as_view(
-            template_name='registration/password_reset_complete.html'
+            template_name='core/auth/password_reset_complete.html'
         ),
         name='password_reset_complete'
     ),
     
-    # Project Views
-    path('projects/', views.ProjectListView.as_view(), name='project_list'),
-    path('project/new/', views.ProjectCreateView.as_view(), name='create_project'),
-    path('project/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'),
-    path('project/<int:pk>/edit/', views.ProjectUpdateView.as_view(), name='edit_project'),
-    path('project/<int:pk>/delete/', views.ProjectDeleteView.as_view(), name='delete_project'),
+    # Project URLs
+    path('projects/', views.project_list, name='project_list'),
+    path('projects/create/', views.project_create, name='project_create'),
+    path('projects/<int:pk>/', views.project_detail, name='project_detail'),
+    path('projects/<int:pk>/edit/', views.project_edit, name='project_edit'),
+    path('projects/<int:pk>/delete/', views.project_delete, name='project_delete'),
     
     # Payment Views
     path('payment/<int:project_id>/create/', views.create_payment, name='create_payment'),
@@ -61,13 +69,14 @@ urlpatterns = [
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     
     # Static Pages
-    path('contact/', views.contact, name='contact'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms/', views.terms, name='terms'),
     path('faq/', views.faq, name='faq'),
+    path('designer/', views.designer, name='designer'),
     
     # API Endpoints
     path('api/', include(router.urls)),
+    path('api/designs/', views.save_design, name='save_design'),
 ]
 
 # Error handlers

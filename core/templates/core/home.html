@@ -1,143 +1,110 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Home - Ubiglu Afro Mutation{% endblock %}
+{% block title %}Home - Ubiglu Afro{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section text-white text-center">
+<section class="hero">
     <div class="container">
-        <h1 class="display-4 mb-4">Welcome to Ubiglu Afro Mutation</h1>
-        <p class="lead mb-4">Discover amazing projects and connect with creators worldwide</p>
-        {% if not user.is_authenticated %}
-        <div class="d-flex justify-content-center gap-3">
-            <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">Get Started</a>
-            <a href="{% url 'account_login' %}" class="btn btn-outline-light btn-lg">Login</a>
-        </div>
-        {% else %}
-        <a href="{% url 'core:create_project' %}" class="btn btn-primary btn-lg">Create New Project</a>
-        {% endif %}
-    </div>
-</section>
-
-<!-- Featured Projects -->
-<section class="py-5">
-    <div class="container">
-        <h2 class="text-center mb-4">Featured Projects</h2>
-        
-        <!-- Category Filter -->
-        <div class="row mb-4">
-            <div class="col-md-6 mx-auto">
-                <select id="category-filter" class="form-select">
-                    <option value="">All Categories</option>
-                    {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-
-        <!-- Projects Grid -->
-        <div class="row g-4">
-            {% for project in projects %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 project-card" data-category="{{ project.category.id }}">
-                    {% if project.image %}
-                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
-                    {% else %}
-                    <img src="{% static 'core/images/default-project.jpg' %}" class="card-img-top" alt="Default Project Image">
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title">{{ project.title }}</h5>
-                        <p class="card-text">{{ project.description|truncatewords:30 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">{{ project.category.name }}</span>
-                            <span class="text-muted">${{ project.price }}</span>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">By {{ project.owner.username }}</small>
-                            <a href="{% url 'core:project_detail' project.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
+        <div class="row align-items-center">
+            <div class="col-lg-6 animate-fade-in">
+                <h1 class="display-4 fw-bold mb-4">Transform Your Fashion Ideas Into Reality</h1>
+                <p class="lead mb-4">Design and customize unique African clothing with our innovative 3D design platform. Bring your creative vision to life with Ubiglu Afro Mutation.</p>
+                <div class="d-flex gap-3">
+                    <a href="{% url 'core:project_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-pencil-alt me-2"></i>Start Designing
+                    </a>
+                    <a href="{% url 'core:about' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Learn More
+                    </a>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p class="lead">No projects available yet.</p>
-                {% if user.is_authenticated %}
-                <a href="{% url 'core:create_project' %}" class="btn btn-primary">Create First Project</a>
-                {% endif %}
+            <div class="col-lg-6 d-none d-lg-block animate-fade-in">
+                <img src="{% static 'core/images/hero-image.png' %}" alt="3D Fashion Design" class="img-fluid rounded-3">
             </div>
-            {% endfor %}
         </div>
     </div>
 </section>
 
 <!-- Features Section -->
-<section class="bg-light py-5">
+<section class="features py-5">
     <div class="container">
-        <h2 class="text-center mb-5">Why Choose Us</h2>
+        <h2 class="text-center mb-5">Why Choose Ubiglu Afro</h2>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="text-center">
-                    <i class="fas fa-laptop-code fa-3x mb-3 text-primary"></i>
-                    <h4>Innovative Projects</h4>
-                    <p>Discover cutting-edge projects from talented creators worldwide.</p>
+                <div class="feature-card">
+                    <i class="fas fa-pencil-ruler"></i>
+                    <h3>Custom Design</h3>
+                    <p>Create unique designs that reflect your personal style and cultural heritage.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="text-center">
-                    <i class="fas fa-shield-alt fa-3x mb-3 text-primary"></i>
-                    <h4>Secure Payments</h4>
-                    <p>Safe and secure payment processing for all transactions.</p>
+                <div class="feature-card">
+                    <i class="fas fa-cube"></i>
+                    <h3>3D Visualization</h3>
+                    <p>See your designs come to life with our advanced 3D modeling technology.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="text-center">
-                    <i class="fas fa-users fa-3x mb-3 text-primary"></i>
-                    <h4>Community</h4>
-                    <p>Join our growing community of creators and innovators.</p>
+                <div class="feature-card">
+                    <i class="fas fa-tshirt"></i>
+                    <h3>Perfect Fit</h3>
+                    <p>Get perfectly fitted clothing with our precise measurement system.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- Latest Projects -->
+<section class="latest-projects py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Latest Projects</h2>
+            <a href="{% url 'core:project_list' %}" class="btn btn-outline-primary">
+                <i class="fas fa-th me-2"></i>View All Projects
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for project in latest_projects %}
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        {% if project.image %}
+                            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                        {% else %}
+                            <img src="{% static 'core/images/project-placeholder.svg' %}" class="card-img-top" alt="Project placeholder">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <p class="card-text">{{ project.description|truncatewords:20 }}</p>
+                            <a href="{% url 'core:project_detail' project.id %}" class="btn btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center">
+                    <p>No projects available yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <!-- Call to Action -->
-<section class="py-5">
+<section class="cta py-5">
     <div class="container text-center">
-        <h2 class="mb-4">Ready to Start Your Journey?</h2>
-        <p class="lead mb-4">Join our community and start sharing your amazing projects today!</p>
-        {% if not user.is_authenticated %}
-        <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">Sign Up Now</a>
+        <h2 class="mb-4">Ready to Start Your Design Journey?</h2>
+        <p class="lead mb-4">Join our community of creative designers and bring your fashion ideas to life.</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'core:project_create' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus me-2"></i>Create New Project
+            </a>
         {% else %}
-        <a href="{% url 'core:create_project' %}" class="btn btn-primary btn-lg">Create Your Project</a>
+            <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up Now
+            </a>
         {% endif %}
     </div>
 </section>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Initialize category filter
-    document.addEventListener('DOMContentLoaded', function() {
-        const categorySelect = document.getElementById('category-filter');
-        if (categorySelect) {
-            categorySelect.addEventListener('change', function() {
-                const selectedCategory = this.value;
-                const projectCards = document.querySelectorAll('.project-card');
-                
-                projectCards.forEach(card => {
-                    if (!selectedCategory || card.dataset.category === selectedCategory) {
-                        card.closest('.col-md-4').style.display = 'block';
-                    } else {
-                        card.closest('.col-md-4').style.display = 'none';
-                    }
-                });
-            });
-        }
-    });
-</script>
 {% endblock %}

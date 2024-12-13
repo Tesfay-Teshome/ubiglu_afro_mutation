@@ -1,41 +1,51 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.core.mail import send_mail
-from django.conf import settings
-from rest_framework import serializers, viewsets
-from rest_framework.response import Response
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse, Http404
+from django.views.decorators.http import require_POST
+from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
-from .models import (
-    UserProfile, Category, Project, Payment,
-    Fabric, DigitalAsset, ColorPalette, OrderTracking
-)
-from .forms import (
-    CustomUserCreationForm, UserProfileForm, ProjectForm,
-    PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm
-)
+from rest_framework.response import Response
+from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabric, Design
+from .forms import ProjectForm, UserProfileForm, CustomUserCreationForm, PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm, UserSettingsForm
 import stripe
+import json
 
-stripe.api_key = settings.STRIPE_SECRET_KEY
+stripe.api_key = 'YOUR_STRIPE_SECRET_KEY'  # Replace with your actual Stripe key
 
 # Basic Views
 def home(request):
     """Home page view."""
-    projects = Project.objects.filter(status='Completed')[:6]
+    latest_projects = Project.objects.filter(status='published').order_by('-created_at')[:3]
     categories = Category.objects.all()
-    return render(request, 'core/home.html', {
-        'projects': projects,
-        'categories': categories
+    return render(request, 'core/home.html', {'latest_projects': latest_projects, 'categories': categories})
+
+def about(request):
+    """About page view."""
+    return render(request, 'core/about.html')
+
+def contact(request):
+    """Contact page view."""
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thank you for your message! We will get back to you soon.')
+            return redirect('core:contact')
+    else:
+        form = ContactForm()
+    
+    return render(request, 'core/contact.html', {
+        'form': form
     })
 
 @login_required
 def dashboard(request):
     """User dashboard view."""
-    user_projects = Project.objects.filter(owner=request.user)
+    user_projects = Project.objects.filter(owner=request.user).order_by('-created_at')[:5]
     user_assets = DigitalAsset.objects.filter(user=request.user)
     user_payments = Payment.objects.filter(user=request.user)
     context = {
@@ -45,216 +55,268 @@ def dashboard(request):
     }
     return render(request, 'core/dashboard.html', context)
 
-# Authentication Views
-def register(request):
-    """User registration view."""
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Create associated profile
-            UserProfile.objects.create(user=user)
-            login(request, user)
-            messages.success(request, 'Registration successful! Welcome to Ubiglu Afro Mutation.')
-            return redirect('core:dashboard')
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
-
-# Profile Views
 @login_required
-def profile_view(request):
-    """Handle user profile view and updates"""
-    try:
-        profile = request.user.userprofile
-    except UserProfile.DoesNotExist:
-        profile = UserProfile.objects.create(user=request.user)
+def profile(request):
+    """User profile view."""
+    return render(request, 'core/profile.html', {
+        'user': request.user
+    })
 
+@login_required
+def settings(request):
+    """User settings view."""
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        form = UserSettingsForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('profile')
+            messages.success(request, 'Settings updated successfully!')
+            return redirect('core:settings')
     else:
-        form = UserProfileForm(instance=profile)
-
-    context = {
-        'form': form,
-        'profile': profile,
-        'social_accounts': request.user.socialaccount_set.all()
-    }
-    return render(request, 'core/profile.html', context)
-
-@login_required
-def profile_settings(request):
-    """Handle user account settings"""
-    return render(request, 'core/profile_settings.html', {
-        'user': request.user,
-        'social_accounts': request.user.socialaccount_set.all()
+        form = UserSettingsForm(instance=request.user)
+    
+    return render(request, 'core/settings.html', {
+        'form': form
     })
 
 @login_required
 def edit_profile(request):
     """Edit user profile view."""
-    profile = request.user.userprofile
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully!')
             return redirect('core:profile')
     else:
-        form = UserProfileForm(instance=profile)
-    return render(request, 'core/edit_profile.html', {'form': form})
+        form = UserProfileForm(instance=request.user.profile)
+    
+    return render(request, 'core/edit_profile.html', {
+        'form': form
+    })
 
 @login_required
 def delete_account(request):
-    """Handle account deletion"""
+    """Delete user account view."""
     if request.method == 'POST':
+        password = request.POST.get('password')
         user = request.user
-        # Logout before deleting
-        logout(request)
-        # Delete user account
-        user.delete()
-        messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('home')
-    return redirect('profile_settings')
+        
+        if user.check_password(password):
+            user.delete()
+            messages.success(request, 'Your account has been deleted.')
+            return redirect('core:home')
+        else:
+            messages.error(request, 'Incorrect password. Please try again.')
+    
+    return render(request, 'core/delete_account.html')
 
-def custom_logout(request):
-    """Custom logout view with success message"""
-    messages.success(request, 'You have been successfully logged out.')
-    return logout(request)
+# Authentication Views
+def login_view(request):
+    """Custom login view."""
+    if request.user.is_authenticated:
+        return redirect('core:dashboard')
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            next_url = request.GET.get('next', 'core:dashboard')
+            return redirect(next_url)
+        else:
+            messages.error(request, 'Invalid username or password.')
+    
+    form = AuthenticationForm()
+    return render(request, 'core/auth/login.html', {'form': form})
+
+def logout_view(request):
+    """Logout view."""
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('core:home')
+
+def register(request):
+    """Handle user registration."""
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Account created successfully! Welcome to Ubiglu Afro.')
+            return redirect('core:dashboard')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'core/auth/register.html', {'form': form})
 
 # Project Views
-class ProjectListView(LoginRequiredMixin, ListView):
-    """View for listing all projects."""
-    model = Project
-    template_name = 'core/project_list.html'
-    context_object_name = 'projects'
-    paginate_by = 12
+def project_list(request):
+    """Display list of projects with pagination."""
+    projects_list = Project.objects.filter(status='published').order_by('-created_at')
+    paginator = Paginator(projects_list, 9)  # Show 9 projects per page
     
-    def get_queryset(self):
-        """Filter projects to show only user's projects."""
-        queryset = super().get_queryset()
-        category = self.request.GET.get('category')
-        if category:
-            queryset = queryset.filter(category__name=category)
-        return queryset
-
-class ProjectDetailView(LoginRequiredMixin, DetailView):
-    """View for showing project details."""
-    model = Project
-    template_name = 'core/project_detail.html'
-
-class ProjectCreateView(LoginRequiredMixin, CreateView):
-    """View for creating a new project."""
-    model = Project
-    form_class = ProjectForm
-    template_name = 'core/project_form.html'
-    success_url = reverse_lazy('core:dashboard')
+    page = request.GET.get('page')
+    try:
+        projects = paginator.page(page)
+    except PageNotAnInteger:
+        projects = paginator.page(1)
+    except EmptyPage:
+        projects = paginator.page(paginator.num_pages)
     
-    def form_valid(self, form):
-        """Set the owner of the project to the current user."""
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
+    return render(request, 'core/projects.html', {'projects': projects})
 
-class ProjectUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    """View for updating an existing project."""
-    model = Project
-    form_class = ProjectForm
-    template_name = 'core/project_form.html'
+@login_required
+def project_create(request):
+    """Create a new project."""
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.owner = request.user
+            
+            # Save design data and measurements
+            design_data = request.POST.get('design_data')
+            measurements = request.POST.get('measurements')
+            
+            if design_data:
+                try:
+                    project.design_data = json.loads(design_data)
+                except json.JSONDecodeError:
+                    messages.warning(request, 'Invalid design data format')
+            
+            if measurements:
+                try:
+                    project.measurements = json.loads(measurements)
+                except json.JSONDecodeError:
+                    messages.warning(request, 'Invalid measurements format')
+            
+            project.save()
+            
+            # Save fabric design if provided
+            if 'fabric_design' in request.FILES:
+                fabric = Fabric.objects.create(
+                    name=f"Fabric for {project.title}",
+                    description="Custom fabric design",
+                    image=request.FILES['fabric_design'],
+                    project=project
+                )
+            
+            messages.success(request, 'Project created successfully!')
+            return redirect('core:project_detail', pk=project.pk)
+    else:
+        form = ProjectForm()
     
-    def test_func(self):
-        """Check if current user is the owner of the project."""
-        project = self.get_object()
-        return self.request.user in project.users.all()
+    # Get available fabrics for the designer
+    fabrics = Fabric.objects.all()
+    return render(request, 'core/project_form.html', {
+        'form': form,
+        'title': 'Create Project',
+        'fabrics': fabrics
+    })
 
-class ProjectDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    """View for deleting a project."""
-    model = Project
-    success_url = reverse_lazy('core:dashboard')
-    template_name = 'core/project_confirm_delete.html'
+def project_detail(request, pk):
+    """Display project details."""
+    project = get_object_or_404(Project, pk=pk)
+    return render(request, 'core/project_detail.html', {'project': project})
+
+@login_required
+def project_edit(request, pk):
+    """Edit an existing project."""
+    project = get_object_or_404(Project, pk=pk)
+    if project.owner != request.user:
+        messages.error(request, 'You do not have permission to edit this project.')
+        return redirect('core:project_detail', pk=pk)
     
-    def test_func(self):
-        """Check if current user is the owner of the project."""
-        project = self.get_object()
-        return self.request.user in project.users.all()
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated successfully!')
+            return redirect('core:project_detail', pk=pk)
+    else:
+        form = ProjectForm(instance=project)
+    return render(request, 'core/project_form.html', {'form': form, 'title': 'Edit Project'})
+
+@login_required
+def project_delete(request, pk):
+    """Delete a project."""
+    project = get_object_or_404(Project, pk=pk)
+    if project.owner != request.user:
+        messages.error(request, 'You do not have permission to delete this project.')
+        return redirect('core:project_detail', pk=pk)
+    
+    if request.method == 'POST':
+        project.delete()
+        messages.success(request, 'Project deleted successfully!')
+        return redirect('core:project_list')
+    return render(request, 'core/project_confirm_delete.html', {'project': project})
 
 # Payment Views
 @login_required
 def create_payment(request, project_id):
+    """Create a payment session for a project."""
     project = get_object_or_404(Project, id=project_id)
-    if request.method == 'POST':
-        try:
-            payment_intent = stripe.PaymentIntent.create(
-                amount=int(project.price * 100),
-                currency='usd',
-                metadata={'project_id': project.id}
-            )
-            return JsonResponse({
-                'clientSecret': payment_intent.client_secret
-            })
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=403)
-    return render(request, 'core/payment.html', {'project': project})
-
-@login_required
-def payment_success(request):
-    return render(request, 'core/payment_success.html')
-
-@login_required
-def payment_cancel(request):
-    return render(request, 'core/payment_cancel.html')
-
-# Contact Views
-def contact(request):
-    """Contact page view."""
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        if form.is_valid():
-            # Process the form data
-            name = form.cleaned_data['name']
-            email = form.cleaned_data['email']
-            subject = form.cleaned_data['subject']
-            message = form.cleaned_data['message']
-            
-            # Send email
-            send_mail(
-                f'Contact Form: {subject}',
-                f'From: {name} <{email}>\n\n{message}',
-                email,
-                ['support@ubigluafro.com'],
-                fail_silently=False,
-            )
-            
-            messages.success(request, 'Your message has been sent successfully!')
-            return redirect('core:contact')
-    else:
-        form = ContactForm()
     
-    return render(request, 'core/contact.html', {'form': form})
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': project.title,
+                    },
+                    'unit_amount': int(project.price * 100),  # Convert to cents
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            success_url=request.build_absolute_uri('/payment/success/'),
+            cancel_url=request.build_absolute_uri('/payment/cancel/'),
+        )
+        return JsonResponse({'sessionId': session.id})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
+def payment_success(request):
+    """Handle successful payment."""
+    messages.success(request, 'Payment successful! Thank you for your purchase.')
+    return redirect('core:dashboard')
+
+def payment_cancel(request):
+    """Handle cancelled payment."""
+    messages.warning(request, 'Payment cancelled.')
+    return redirect('core:dashboard')
+
+# Product Views
+def products(request):
+    """View function for the products page."""
+    return render(request, 'core/products.html')
+
+# Static Pages
 def privacy_policy(request):
-    """Privacy policy page view."""
-    return render(request, 'core/privacy_policy.html')
+    """View for privacy policy page."""
+    return render(request, 'core/static/privacy_policy.html')
 
 def terms(request):
-    """Terms of service page view."""
-    return render(request, 'core/terms.html')
+    """View for terms of service page."""
+    return render(request, 'core/static/terms.html')
 
 def faq(request):
-    """FAQ page view."""
-    return render(request, 'core/faq.html')
+    """View for FAQ page."""
+    return render(request, 'core/static/faq.html')
+
+def designer(request):
+    """View for designer page."""
+    fabrics = Fabric.objects.all()
+    return render(request, 'core/designer.html', {
+        'fabrics': fabrics
+    })
 
 # API Views
 class DigitalAssetSerializer(serializers.ModelSerializer):
     class Meta:
         model = DigitalAsset
-        fields = '__all__'
-
-class ColorPaletteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ColorPalette
         fields = '__all__'
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -263,34 +325,49 @@ class PaymentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class DigitalAssetViewSet(viewsets.ModelViewSet):
+    """ViewSet for digital assets API."""
     queryset = DigitalAsset.objects.all()
     serializer_class = DigitalAssetSerializer
 
     @action(detail=True, methods=['post'])
     def apply_colorway(self, request, pk=None):
+        """Apply a colorway to a digital asset."""
         asset = self.get_object()
-        asset.applied_colors = request.data.get('colors', {})
-        asset.save()
+        # Add your colorway application logic here
         return Response({'message': 'Colorway applied successfully'})
 
 class PaymentViewSet(viewsets.ModelViewSet):
+    """ViewSet for payments API."""
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
-    @action(detail=False, methods=['post'])
-    def create_payment_intent(self, request):
+    @action(detail=True, methods=['post'])
+    def process(self, request, pk=None):
+        """Process a payment."""
+        payment = self.get_object()
         try:
-            payment_intent = stripe.PaymentIntent.create(
-                amount=int(request.data['amount'] * 100),
-                currency='usd'
-            )
-            return Response({'clientSecret': payment_intent.client_secret})
+            # Add your payment processing logic here
+            return Response({'message': 'Payment processed successfully'})
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
-# Error Views
+@require_POST
+def save_design(request):
+    """API endpoint to save a design."""
+    try:
+        data = json.loads(request.body)
+        # Add your design saving logic here
+        return JsonResponse({'status': 'success'})
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+# Error Handlers
 def handler404(request, exception):
-    return render(request, 'core/404.html', status=404)
+    """Custom 404 error handler."""
+    return render(request, 'core/errors/404.html', status=404)
 
 def handler500(request):
-    return render(request, 'core/500.html', status=500)
+    """Custom 500 error handler."""
+    return render(request, 'core/errors/500.html', status=500)

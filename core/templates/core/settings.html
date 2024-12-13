@@ -1,0 +1,174 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Settings - Ubiglu Afro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <!-- Settings Navigation -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="nav flex-column nav-pills" id="settings-tab" role="tablist">
+                        <button class="nav-link active mb-2" data-bs-toggle="pill" data-bs-target="#account" type="button">
+                            <i class="fas fa-user me-2"></i>Account
+                        </button>
+                        <button class="nav-link mb-2" data-bs-toggle="pill" data-bs-target="#security" type="button">
+                            <i class="fas fa-shield-alt me-2"></i>Security
+                        </button>
+                        <button class="nav-link mb-2" data-bs-toggle="pill" data-bs-target="#notifications" type="button">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </button>
+                        <button class="nav-link mb-2" data-bs-toggle="pill" data-bs-target="#billing" type="button">
+                            <i class="fas fa-credit-card me-2"></i>Billing
+                        </button>
+                        <button class="nav-link text-danger" data-bs-toggle="pill" data-bs-target="#delete-account" type="button">
+                            <i class="fas fa-trash-alt me-2"></i>Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="tab-content">
+                <!-- Account Settings -->
+                <div class="tab-pane fade show active" id="account">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Account Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="tab-pane fade" id="security">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Security Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h6>Change Password</h6>
+                                <p class="text-muted">Ensure your account is using a long, random password to stay secure.</p>
+                                <a href="{% url 'core:password_reset' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-key me-2"></i>Change Password
+                                </a>
+                            </div>
+                            <div class="mb-4">
+                                <h6>Two-Factor Authentication</h6>
+                                <p class="text-muted">Add additional security to your account using two-factor authentication.</p>
+                                <button class="btn btn-outline-primary" disabled>
+                                    <i class="fas fa-lock me-2"></i>Enable 2FA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div class="tab-pane fade" id="notifications">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Notification Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                        <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                                    </div>
+                                    <small class="text-muted">Receive email notifications about your account activity.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="projectUpdates" checked>
+                                        <label class="form-check-label" for="projectUpdates">Project Updates</label>
+                                    </div>
+                                    <small class="text-muted">Get notified when there are updates to your projects.</small>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="marketingEmails">
+                                        <label class="form-check-label" for="marketingEmails">Marketing Emails</label>
+                                    </div>
+                                    <small class="text-muted">Receive marketing and promotional emails.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Preferences
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Billing Settings -->
+                <div class="tab-pane fade" id="billing">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Billing Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h6>Current Plan</h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-2">Free</span>
+                                    <span class="text-muted">Basic features included</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <h6>Payment Method</h6>
+                                <p class="text-muted">No payment method added</p>
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-plus me-2"></i>Add Payment Method
+                                </button>
+                            </div>
+                            <div>
+                                <h6>Billing History</h6>
+                                <p class="text-muted">No billing history available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="tab-pane fade" id="delete-account">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0 text-danger">Delete Account</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-danger">
+                                <h6 class="alert-heading">Warning!</h6>
+                                <p class="mb-0">This action cannot be undone. All your data will be permanently deleted.</p>
+                            </div>
+                            <form method="post" action="{% url 'core:account_delete' %}" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Enter your password to confirm</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash-alt me-2"></i>Delete Account
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

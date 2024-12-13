@@ -1,112 +1,513 @@
 {% extends 'core/base.html' %}
-{% load static %}
 {% load crispy_forms_tags %}
 
-{% block title %}{% if form.instance.pk %}Edit Project{% else %}Create Project{% endif %} - Ubiglu Afro Mutation{% endblock %}
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+<style>
+    .designer-container {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .canvas-container {
+        flex: 2;
+        position: relative;
+    }
+    
+    .controls-container {
+        flex: 1;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    #fabric-canvas {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .measurement-input {
+        margin-bottom: 1rem;
+    }
+    
+    .fabric-preview {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        border-radius: 4px;
+    }
+    
+    .fabric-preview.selected {
+        border-color: #007bff;
+    }
+    
+    .project-form-container {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .designer-container {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .canvas-container {
+        flex: 2;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        min-height: 500px;
+    }
+
+    .tools-container {
+        flex: 1;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+    }
+
+    .fabric-preview {
+        width: 100%;
+        height: 200px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .color-picker {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .pattern-selector {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .measurements-container {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .measurement-input {
+        margin-bottom: 0.5rem;
+    }
+
+    .custom-file-upload {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .custom-file-upload:hover {
+        border-color: #6c757d;
+        background: #f8f9fa;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        padding: 0.75rem;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+
+    .btn-primary {
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+    }
+
+    #canvas3D {
+        width: 100%;
+        height: 500px;
+        border-radius: 8px;
+    }
+
+    .texture-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .texture-item {
+        cursor: pointer;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .texture-item:hover {
+        transform: scale(1.05);
+    }
+
+    .texture-item img {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h3 class="mb-0">{% if form.instance.pk %}Edit Project{% else %}Create New Project{% endif %}</h3>
+<div class="container">
+    <div class="project-form-container">
+        <h2 class="mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Project</h2>
+        
+        <!-- 3D Designer Section -->
+        <div class="designer-container">
+            <div class="canvas-container">
+                <canvas id="canvas3D"></canvas>
+            </div>
+            
+            <div class="tools-container">
+                <h4 class="mb-3">Design Tools</h4>
+                
+                <!-- Fabric Selection -->
+                <div class="mb-4">
+                    <label class="form-label">Select Fabric</label>
+                    <select class="form-select" id="fabricSelect">
+                        <option value="">Choose a fabric...</option>
+                        <option value="cotton">Cotton</option>
+                        <option value="silk">Silk</option>
+                        <option value="wool">Wool</option>
+                        <option value="linen">Linen</option>
+                    </select>
                 </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-                        {% csrf_token %}
-                        
-                        <!-- Image Preview -->
-                        <div class="text-center mb-4">
-                            {% if form.instance.image %}
-                            <img id="image-preview" src="{{ form.instance.image.url }}" 
-                                 alt="Project Image" class="img-fluid rounded" style="max-height: 300px;">
-                            {% else %}
-                            <img id="image-preview" src="{% static 'core/images/default-project.jpg' %}" 
-                                 alt="Default Project Image" class="img-fluid rounded" style="max-height: 300px;">
-                            {% endif %}
-                        </div>
 
-                        <!-- Form Fields -->
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                {{ form.title|as_crispy_field }}
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                {{ form.description|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.category|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.price|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.status|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.image|as_crispy_field }}
-                            </div>
-                        </div>
+                <!-- Color Selection -->
+                <div class="mb-4">
+                    <label class="form-label">Choose Color</label>
+                    <input type="color" class="form-control form-control-color w-100" id="colorPicker" value="#563d7c">
+                </div>
 
-                        <!-- Submit Buttons -->
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> 
-                                {% if form.instance.pk %}Update{% else %}Create{% endif %} Project
-                            </button>
+                <!-- Pattern Selection -->
+                <div class="mb-4">
+                    <label class="form-label">Select Pattern</label>
+                    <div class="texture-list">
+                        <div class="texture-item">
+                            <img src="{% static 'core/images/patterns/pattern1.jpg' %}" alt="Pattern 1">
                         </div>
-                    </form>
+                        <div class="texture-item">
+                            <img src="{% static 'core/images/patterns/pattern2.jpg' %}" alt="Pattern 2">
+                        </div>
+                        <div class="texture-item">
+                            <img src="{% static 'core/images/patterns/pattern3.jpg' %}" alt="Pattern 3">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Measurements -->
+                <div class="measurements-container">
+                    <h5 class="mb-3">Measurements</h5>
+                    <div class="measurement-input">
+                        <label class="form-label">Chest (cm)</label>
+                        <input type="number" class="form-control" id="chestMeasurement">
+                    </div>
+                    <div class="measurement-input">
+                        <label class="form-label">Waist (cm)</label>
+                        <input type="number" class="form-control" id="waistMeasurement">
+                    </div>
+                    <div class="measurement-input">
+                        <label class="form-label">Hip (cm)</label>
+                        <input type="number" class="form-control" id="hipMeasurement">
+                    </div>
+                    <div class="measurement-input">
+                        <label class="form-label">Length (cm)</label>
+                        <input type="number" class="form-control" id="lengthMeasurement">
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Project Details Form -->
+        <form method="post" enctype="multipart/form-data" id="projectForm">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.title|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.category|as_crispy_field }}
+                </div>
+            </div>
+            
+            {{ form.description|as_crispy_field }}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.price|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Upload Reference Image</label>
+                    <div class="custom-file-upload">
+                        {{ form.image }}
+                        <div id="imagePreview"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden fields for 3D design data -->
+            <input type="hidden" name="design_data" id="designData">
+            <input type="hidden" name="measurements" id="measurementsData">
+            
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Project
+                </button>
+                <a href="{% url 'core:project_list' %}" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+        
+        <div class="designer-container">
+            <div class="canvas-container">
+                <canvas id="fabric-canvas" width="600" height="400"></canvas>
+            </div>
+            
+            <div class="controls-container">
+                <h4>Design Controls</h4>
+                
+                <div class="mb-3">
+                    <label class="form-label">Select Fabric</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for fabric in fabrics %}
+                        <img src="{{ fabric.image.url }}" 
+                             class="fabric-preview" 
+                             data-fabric-id="{{ fabric.id }}"
+                             title="{{ fabric.name }}">
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Color</label>
+                    <input type="color" class="form-control form-control-color" id="color-picker">
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Pattern</label>
+                    <select class="form-select" id="pattern-select">
+                        <option value="solid">Solid</option>
+                        <option value="stripes">Stripes</option>
+                        <option value="dots">Dots</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </div>
+                
+                <h4 class="mt-4">Measurements</h4>
+                <div class="measurement-input">
+                    <label class="form-label">Chest (cm)</label>
+                    <input type="number" class="form-control" name="chest" min="0" step="0.1">
+                </div>
+                
+                <div class="measurement-input">
+                    <label class="form-label">Waist (cm)</label>
+                    <input type="number" class="form-control" name="waist" min="0" step="0.1">
+                </div>
+                
+                <div class="measurement-input">
+                    <label class="form-label">Hip (cm)</label>
+                    <input type="number" class="form-control" name="hip" min="0" step="0.1">
+                </div>
+                
+                <div class="measurement-input">
+                    <label class="form-label">Length (cm)</label>
+                    <input type="number" class="form-control" name="length" min="0" step="0.1">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hidden fields for design data -->
+        <input type="hidden" name="design_data" id="design-data">
+        <input type="hidden" name="measurements" id="measurements-data">
     </div>
 </div>
-{% endblock %}
 
 {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <script>
-    // Image preview functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const imageInput = document.querySelector('#id_image');
-        const imagePreview = document.querySelector('#image-preview');
+    // Initialize 3D viewer
+    let scene, camera, renderer, model;
+    
+    function init3DViewer() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas3D'), antialias: true });
+        renderer.setSize(document.getElementById('canvas3D').offsetWidth, document.getElementById('canvas3D').offsetHeight);
         
-        if (imageInput && imagePreview) {
-            imageInput.addEventListener('change', function() {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
+        // Add lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(0, 1, 0);
+        scene.add(directionalLight);
+        
+        camera.position.z = 5;
+        
+        animate();
+    }
+    
+    function animate() {
+        requestAnimationFrame(animate);
+        if (model) {
+            model.rotation.y += 0.01;
         }
-
-        // Form validation
-        const form = document.querySelector('form');
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
+        renderer.render(scene, camera);
+    }
+    
+    // Handle fabric selection
+    document.getElementById('fabricSelect').addEventListener('change', function(e) {
+        updateFabricPreview(e.target.value);
+    });
+    
+    // Handle color selection
+    document.getElementById('colorPicker').addEventListener('input', function(e) {
+        updateModelColor(e.target.value);
+    });
+    
+    // Handle form submission
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Collect measurements
+        const measurements = {
+            chest: document.getElementById('chestMeasurement').value,
+            waist: document.getElementById('waistMeasurement').value,
+            hip: document.getElementById('hipMeasurement').value,
+            length: document.getElementById('lengthMeasurement').value
+        };
+        
+        // Collect design data
+        const designData = {
+            fabric: document.getElementById('fabricSelect').value,
+            color: document.getElementById('colorPicker').value,
+            // Add other design properties
+        };
+        
+        // Set hidden fields
+        document.getElementById('measurementsData').value = JSON.stringify(measurements);
+        document.getElementById('designData').value = JSON.stringify(designData);
+        
+        // Submit form
+        this.submit();
+    });
+    
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        init3DViewer();
+        
+        // Handle file input change
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').innerHTML = `
+                        <img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                    `;
+                }
+                reader.readAsDataURL(file);
             }
-            form.classList.add('was-validated');
         });
+    });
+</script>
 
-        // Price formatting
-        const priceInput = document.querySelector('#id_price');
-        if (priceInput) {
-            priceInput.addEventListener('blur', function() {
-                const value = parseFloat(this.value);
-                if (!isNaN(value)) {
-                    this.value = value.toFixed(2);
-                }
+<script>
+    // Initialize Fabric.js canvas
+    const canvas = new fabric.Canvas('fabric-canvas');
+    
+    // Initialize Three.js scene for 3D preview
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(600, 400);
+    
+    // Add basic lighting
+    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(light);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 1, 1);
+    scene.add(directionalLight);
+    
+    // Position camera
+    camera.position.z = 5;
+    
+    // Handle fabric selection
+    document.querySelectorAll('.fabric-preview').forEach(preview => {
+        preview.addEventListener('click', function() {
+            document.querySelectorAll('.fabric-preview').forEach(p => 
+                p.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Load fabric texture
+            const fabricUrl = this.src;
+            fabric.Image.fromURL(fabricUrl, function(img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                    scaleX: canvas.width / img.width,
+                    scaleY: canvas.height / img.height
+                });
             });
+        });
+    });
+    
+    // Handle color changes
+    document.getElementById('color-picker').addEventListener('input', function(e) {
+        const color = e.target.value;
+        if (canvas.getActiveObject()) {
+            canvas.getActiveObject().set('fill', color);
+            canvas.renderAll();
         }
+    });
+    
+    // Handle pattern selection
+    document.getElementById('pattern-select').addEventListener('change', function(e) {
+        const pattern = e.target.value;
+        // Implement pattern application logic here
+    });
+    
+    // Save design data before form submission
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        // Capture design data
+        const designData = {
+            canvasJSON: canvas.toJSON(),
+            selectedFabric: document.querySelector('.fabric-preview.selected')?.dataset.fabricId,
+            selectedPattern: document.getElementById('pattern-select').value,
+            selectedColor: document.getElementById('color-picker').value
+        };
+        
+        // Capture measurements
+        const measurements = {
+            chest: document.querySelector('input[name="chest"]').value,
+            waist: document.querySelector('input[name="waist"]').value,
+            hip: document.querySelector('input[name="hip"]').value,
+            length: document.querySelector('input[name="length"]').value
+        };
+        
+        // Set hidden field values
+        document.getElementById('design-data').value = JSON.stringify(designData);
+        document.getElementById('measurements-data').value = JSON.stringify(measurements);
     });
 </script>
 {% endblock %}

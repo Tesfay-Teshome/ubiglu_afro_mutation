@@ -1,0 +1,102 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}About Us - Ubiglu Afro{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 mb-4">About Ubiglu Afro</h1>
+            <p class="lead">Innovating the future of digital design and simulation</p>
+        </div>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h2 class="mb-4">Our Mission</h2>
+            <p class="lead">To empower creators and innovators with cutting-edge tools for digital design and simulation.</p>
+            <p>We believe in making advanced technology accessible to everyone, enabling the next generation of creators to bring their ideas to life.</p>
+        </div>
+        <div class="col-md-6">
+            <img src="{% static 'img/mission.jpg' %}" alt="Our Mission" class="img-fluid rounded shadow">
+        </div>
+    </div>
+
+    <!-- Values Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Our Values</h2>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-lightbulb fs-2"></i>
+                    </div>
+                    <h3 class="h4">Innovation</h3>
+                    <p>Pushing boundaries and exploring new possibilities in digital design.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-people fs-2"></i>
+                    </div>
+                    <h3 class="h4">Community</h3>
+                    <p>Building a supportive network of creators and innovators.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="feature-icon mx-auto mb-3">
+                        <i class="bi bi-shield-check fs-2"></i>
+                    </div>
+                    <h3 class="h4">Quality</h3>
+                    <p>Delivering excellence in every tool and service we provide.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h2>Our Team</h2>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <img src="{% static 'img/team1.jpg' %}" class="card-img-top" alt="Team Member">
+                <div class="card-body text-center">
+                    <h5 class="card-title">John Doe</h5>
+                    <p class="card-text text-muted">CEO & Founder</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <img src="{% static 'img/team2.jpg' %}" class="card-img-top" alt="Team Member">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Jane Smith</h5>
+                    <p class="card-text text-muted">Lead Developer</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <img src="{% static 'img/team3.jpg' %}" class="card-img-top" alt="Team Member">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Mike Johnson</h5>
+                    <p class="card-text text-muted">Design Director</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
