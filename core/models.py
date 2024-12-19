@@ -8,6 +8,7 @@ from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils import timezone
+import os
 
 # Encryption Setup
 encryption_key = settings.ENCRYPTION_KEY
@@ -62,6 +63,23 @@ class UserProfile(models.Model):
 
     def get_phone_number(self):
         return cipher.decrypt(self.phone_number.encode()).decode() if self.phone_number else None
+
+# Profile
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(upload_to='user_profile_images/%Y/%m/%d/', blank=True, null=True, default='default.jpg')
+
+    def __str__(self):
+        return self.user.username
+
+    def save(self, *args, **kwargs):
+        # Override save method to customize the image path
+        if self.profile_image:
+            # Get the unique id of the user
+            user_id = self.user.id
+            # Create a new path for the image
+            self.profile_image.name = f'user_profile_images/{user_id}/{self.profile_image.name}'
+        super().save(*args, **kwargs)
 
 # Category
 class Category(models.Model):
@@ -221,11 +239,9 @@ class Design(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """Create a UserProfile instance when a User is created."""
     if created:
-        UserProfile.objects.create(user=instance)
+        Profile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    """Save UserProfile instance when User is saved."""
-    instance.userprofile.save()
+    instance.profile.save()

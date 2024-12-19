@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -9,7 +9,7 @@ from django.views.decorators.http import require_POST
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabric, Design
+from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabric, Design, Profile
 from .forms import ProjectForm, UserProfileForm, CustomUserCreationForm, PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm, UserSettingsForm
 import stripe
 import json
@@ -45,13 +45,19 @@ def contact(request):
 @login_required
 def dashboard(request):
     """User dashboard view."""
+    total_projects = Project.objects.filter(owner=request.user).count()
     user_projects = Project.objects.filter(owner=request.user).order_by('-created_at')[:5]
     user_assets = DigitalAsset.objects.filter(user=request.user)
     user_payments = Payment.objects.filter(user=request.user)
+    total_earnings = sum(project.price for project in Project.objects.filter(owner=request.user))
+    total_sales = Payment.objects.filter(user=request.user).count()
     context = {
         'projects': user_projects,
+        'total_projects': total_projects,
         'assets': user_assets,
-        'payments': user_payments
+        'payments': user_payments,
+        'total_earnings': total_earnings,
+        'total_sales': total_sales
     }
     return render(request, 'core/dashboard.html', context)
 
@@ -65,34 +71,25 @@ def profile(request):
 @login_required
 def settings(request):
     """User settings view."""
-    if request.method == 'POST':
-        form = UserSettingsForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Settings updated successfully!')
-            return redirect('core:settings')
-    else:
-        form = UserSettingsForm(instance=request.user)
-    
-    return render(request, 'core/settings.html', {
-        'form': form
-    })
+    return render(request, 'core/settings.html')
 
 @login_required
 def edit_profile(request):
-    """Edit user profile view."""
+    try:
+        profile = request.user.profile
+    except Profile.DoesNotExist:
+        # Create a profile if it does not exist
+        profile = Profile.objects.create(user=request.user)
+
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('core:profile')
+            return redirect('core:profile')  # Redirect to the profile page
     else:
-        form = UserProfileForm(instance=request.user.profile)
-    
-    return render(request, 'core/edit_profile.html', {
-        'form': form
-    })
+        form = UserProfileForm(instance=profile)
+
+    return render(request, 'core/edit_profile.html', {'form': form})
 
 @login_required
 def delete_account(request):
@@ -137,14 +134,13 @@ def logout_view(request):
     return redirect('core:home')
 
 def register(request):
-    """Handle user registration."""
+    """Handle user registration with profile image upload."""
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully! Welcome to Ubiglu Afro.')
-            return redirect('core:dashboard')
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # Specify the backend
+            return redirect('core:dashboard')  # Redirect to a success page
     else:
         form = CustomUserCreationForm()
     return render(request, 'core/auth/register.html', {'form': form})
@@ -174,6 +170,13 @@ def project_create(request):
             project = form.save(commit=False)
             project.owner = request.user
             
+            # Debugging output to check form data
+            print(f"Form data: {request.POST}")
+            
+            # Log the submitted category value
+            selected_category = request.POST.get('category')
+            print(f"Submitted category: {selected_category}")
+            
             # Save design data and measurements
             design_data = request.POST.get('design_data')
             measurements = request.POST.get('measurements')
@@ -190,7 +193,10 @@ def project_create(request):
                 except json.JSONDecodeError:
                     messages.warning(request, 'Invalid measurements format')
             
+            project.status = 'published'  # Set project status to published
+            
             project.save()
+            print(f"Project saved: {project.title}")  # Debugging statement
             
             # Save fabric design if provided
             if 'fabric_design' in request.FILES:
@@ -203,15 +209,20 @@ def project_create(request):
             
             messages.success(request, 'Project created successfully!')
             return redirect('core:project_detail', pk=project.pk)
+        else:
+            print(f"Form errors: {form.errors}")  # Debugging statement
     else:
         form = ProjectForm()
     
     # Get available fabrics for the designer
     fabrics = Fabric.objects.all()
+    categories = Category.objects.all()  # Retrieve categories
+    print(f"Categories: {[cat.name for cat in categories]}")  # Debugging output
     return render(request, 'core/project_form.html', {
         'form': form,
         'title': 'Create Project',
-        'fabrics': fabrics
+        'fabrics': fabrics,
+        'categories': categories  # Pass categories to the template
     })
 
 def project_detail(request, pk):
@@ -371,3 +382,10 @@ def handler404(request, exception):
 def handler500(request):
     """Custom 500 error handler."""
     return render(request, 'core/errors/500.html', status=500)
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    # ... your other url patterns
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

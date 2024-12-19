@@ -1,9 +1,26 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block extra_head %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js"></script>
+<script src="/node_modules/fabric/dist/fabric.min.js"></script>
+<script src="/node_modules/three/build/three.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Fabric and THREE are accessible
+        const fabric = window.fabric;
+        const THREE = window.THREE;
+
+        if (!fabric) {
+            console.error("Fabric.js is not loaded.");
+        }
+
+        if (!THREE) {
+            console.error("THREE.js is not loaded.");
+        }
+    });
+</script>
+
 <style>
     .designer-container {
         display: flex;
@@ -167,85 +184,108 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="project-form-container">
-        <h2 class="mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Project</h2>
-        
-        <!-- 3D Designer Section -->
-        <div class="designer-container">
-            <div class="canvas-container">
-                <canvas id="canvas3D"></canvas>
-            </div>
-            
-            <div class="tools-container">
-                <h4 class="mb-3">Design Tools</h4>
-                
-                <!-- Fabric Selection -->
-                <div class="mb-4">
-                    <label class="form-label">Select Fabric</label>
-                    <select class="form-select" id="fabricSelect">
-                        <option value="">Choose a fabric...</option>
-                        <option value="cotton">Cotton</option>
-                        <option value="silk">Silk</option>
-                        <option value="wool">Wool</option>
-                        <option value="linen">Linen</option>
-                    </select>
-                </div>
-
-                <!-- Color Selection -->
-                <div class="mb-4">
-                    <label class="form-label">Choose Color</label>
-                    <input type="color" class="form-control form-control-color w-100" id="colorPicker" value="#563d7c">
-                </div>
-
-                <!-- Pattern Selection -->
-                <div class="mb-4">
-                    <label class="form-label">Select Pattern</label>
-                    <div class="texture-list">
-                        <div class="texture-item">
-                            <img src="{% static 'core/images/patterns/pattern1.jpg' %}" alt="Pattern 1">
-                        </div>
-                        <div class="texture-item">
-                            <img src="{% static 'core/images/patterns/pattern2.jpg' %}" alt="Pattern 2">
-                        </div>
-                        <div class="texture-item">
-                            <img src="{% static 'core/images/patterns/pattern3.jpg' %}" alt="Pattern 3">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Measurements -->
-                <div class="measurements-container">
-                    <h5 class="mb-3">Measurements</h5>
-                    <div class="measurement-input">
-                        <label class="form-label">Chest (cm)</label>
-                        <input type="number" class="form-control" id="chestMeasurement">
-                    </div>
-                    <div class="measurement-input">
-                        <label class="form-label">Waist (cm)</label>
-                        <input type="number" class="form-control" id="waistMeasurement">
-                    </div>
-                    <div class="measurement-input">
-                        <label class="form-label">Hip (cm)</label>
-                        <input type="number" class="form-control" id="hipMeasurement">
-                    </div>
-                    <div class="measurement-input">
-                        <label class="form-label">Length (cm)</label>
-                        <input type="number" class="form-control" id="lengthMeasurement">
-                    </div>
-                </div>
-            </div>
+<form id="projectForm" method="post" action="{% url 'core:project_create' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <ul>
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
         </div>
+    {% endif %}
+    <div class="container">
+        <div class="project-form-container">
+            <h2 class="mb-4">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Project</h2>
+            
+            <!-- 3D Designer Section -->
+            <div class="designer-container">
+                <div class="canvas-container">
+                    <canvas id="canvas3D"></canvas>
+                </div>
+                
+                <div class="tools-container">
+                    <h4 class="mb-3">Design Tools</h4>
+                    
+                    <!-- Fabric Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Select Fabric</label>
+                        <select class="form-select" id="fabricSelect">
+                            <option value="">Choose a fabric...</option>
+                            <option value="cotton">Cotton</option>
+                            <option value="silk">Silk</option>
+                            <option value="wool">Wool</option>
+                            <option value="linen">Linen</option>
+                        </select>
+                    </div>
 
-        <!-- Project Details Form -->
-        <form method="post" enctype="multipart/form-data" id="projectForm">
-            {% csrf_token %}
+                    <!-- Color Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Choose Color</label>
+                        <input type="color" class="form-control form-control-color w-100" id="colorPicker" value="#563d7c">
+                    </div>
+
+                    <!-- Pattern Selection -->
+                    <div class="mb-4">
+                        <label class="form-label">Select Pattern</label>
+                        <div class="texture-list">
+                            <div class="texture-item">
+                                <img src="{% static 'core/images/patterns/pattern1.jpg' %}" alt="Pattern 1">
+                            </div>
+                            <div class="texture-item">
+                                <img src="{% static 'core/images/patterns/pattern2.jpg' %}" alt="Pattern 2">
+                            </div>
+                            <div class="texture-item">
+                                <img src="{% static 'core/images/patterns/pattern3.jpg' %}" alt="Pattern 3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Measurements -->
+                    <div class="measurements-container">
+                        <h5 class="mb-3">Measurements</h5>
+                        <div class="measurement-input">
+                            <label class="form-label">Chest (cm)</label>
+                            <input type="number" class="form-control" id="chestMeasurement" required>
+                        </div>
+                        <div class="measurement-input">
+                            <label class="form-label">Waist (cm)</label>
+                            <input type="number" class="form-control" id="waistMeasurement" required>
+                        </div>
+                        <div class="measurement-input">
+                            <label class="form-label">Hip (cm)</label>
+                            <input type="number" class="form-control" id="hipMeasurement" required>
+                        </div>
+                        <div class="measurement-input">
+                            <label class="form-label">Length (cm)</label>
+                            <input type="number" class="form-control" id="lengthMeasurement" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Details Form -->
+            
             <div class="row">
                 <div class="col-md-6">
                     {{ form.title|as_crispy_field }}
                 </div>
                 <div class="col-md-6">
-                    {{ form.category|as_crispy_field }}
+                    <div class="mb-4">
+                        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50">
+                            
+                            {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
             
@@ -268,14 +308,7 @@
             <input type="hidden" name="design_data" id="designData">
             <input type="hidden" name="measurements" id="measurementsData">
             
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>Save Project
-                </button>
-                <a href="{% url 'core:project_list' %}" class="btn btn-secondary ms-2">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </a>
-            </div>
+            
         </form>
         
         <div class="designer-container">
@@ -335,101 +368,79 @@
                 </div>
             </div>
         </div>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Create Project
+            </button>
+            <a href="{% url 'core:project_list' %}" class="btn btn-secondary ms-2">
+                <i class="fas fa-times me-2"></i>Cancel
+            </a>
+        </div>
         
         <!-- Hidden fields for design data -->
         <input type="hidden" name="design_data" id="design-data">
         <input type="hidden" name="measurements" id="measurements-data">
     </div>
 </div>
+{% endblock %}
 
 {% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
 <script>
-    // Initialize 3D viewer
-    let scene, camera, renderer, model;
-    
-    function init3DViewer() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas3D'), antialias: true });
-        renderer.setSize(document.getElementById('canvas3D').offsetWidth, document.getElementById('canvas3D').offsetHeight);
-        
-        // Add lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 1, 0);
-        scene.add(directionalLight);
-        
-        camera.position.z = 5;
-        
-        animate();
-    }
-    
-    function animate() {
-        requestAnimationFrame(animate);
-        if (model) {
-            model.rotation.y += 0.01;
-        }
-        renderer.render(scene, camera);
-    }
-    
-    // Handle fabric selection
-    document.getElementById('fabricSelect').addEventListener('change', function(e) {
-        updateFabricPreview(e.target.value);
-    });
-    
-    // Handle color selection
-    document.getElementById('colorPicker').addEventListener('input', function(e) {
-        updateModelColor(e.target.value);
-    });
-    
-    // Handle form submission
-    document.getElementById('projectForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Collect measurements
-        const measurements = {
-            chest: document.getElementById('chestMeasurement').value,
-            waist: document.getElementById('waistMeasurement').value,
-            hip: document.getElementById('hipMeasurement').value,
-            length: document.getElementById('lengthMeasurement').value
-        };
-        
-        // Collect design data
-        const designData = {
-            fabric: document.getElementById('fabricSelect').value,
-            color: document.getElementById('colorPicker').value,
-            // Add other design properties
-        };
-        
-        // Set hidden fields
-        document.getElementById('measurementsData').value = JSON.stringify(measurements);
-        document.getElementById('designData').value = JSON.stringify(designData);
-        
-        // Submit form
-        this.submit();
-    });
-    
-    // Initialize everything when page loads
     document.addEventListener('DOMContentLoaded', function() {
-        init3DViewer();
-        
-        // Handle file input change
-        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('imagePreview').innerHTML = `
-                        <img src="${e.target.result}" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
-                    `;
-                }
-                reader.readAsDataURL(file);
+        // Ensure Fabric and THREE are accessible
+        const fabric = window.fabric;
+        const THREE = window.THREE;
+
+        if (!fabric) {
+            console.error("Fabric.js is not loaded.");
+        }
+
+        if (!THREE) {
+            console.error("THREE.js is not loaded.");
+        }
+
+        // Declare variables in the global scope
+        let scene, camera, renderer;
+
+        function init3DViewer() {
+            if (!THREE) {
+                console.error("THREE.js is not loaded.");
+                return;
             }
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas3D'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 1, 0);
+            scene.add(directionalLight);
+            
+            camera.position.z = 5;
+            
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // Event listeners for fabric selection and color picker
+        document.getElementById('fabricSelect').addEventListener('change', function(e) {
+            updateFabricPreview(e.target.value);
         });
+
+        document.getElementById('colorPicker').addEventListener('input', function(e) {
+            // Handle color change
+        });
+
+        // Initialize the 3D viewer
+        init3DViewer();
     });
 </script>
 
@@ -438,21 +449,21 @@
     const canvas = new fabric.Canvas('fabric-canvas');
     
     // Initialize Three.js scene for 3D preview
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(600, 400);
+    const threeScene = new THREE.Scene();
+    const threeCamera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+    const threeRenderer = new THREE.WebGLRenderer();
+    threeRenderer.setSize(600, 400);
     
     // Add basic lighting
     const light = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(light);
+    threeScene.add(light);
     
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(0, 1, 1);
-    scene.add(directionalLight);
+    threeScene.add(directionalLight);
     
     // Position camera
-    camera.position.z = 5;
+    threeCamera.position.z = 5;
     
     // Handle fabric selection
     document.querySelectorAll('.fabric-preview').forEach(preview => {

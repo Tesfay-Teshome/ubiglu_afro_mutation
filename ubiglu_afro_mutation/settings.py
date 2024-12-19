@@ -40,21 +40,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',
-    
+    'django.contrib.sites',  # Required for Allauth
     # Third-party apps
     'crispy_forms',
     'crispy_bootstrap5',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     'django_cleanup.apps.CleanupConfig',
     'dbbackup',
     'django_crontab',
     'rest_framework',
     'phonenumber_field',
     'corsheaders',  # Added 'corsheaders' to INSTALLED_APPS
-    
     # Local apps
     'core',
 ]
@@ -102,7 +102,7 @@ DATABASES = {
 }
 
 # Site ID for django-allauth
-SITE_ID = 1
+SITE_ID = 1  # Ensure this is set to your site's ID
 
 # Authentication settings
 AUTHENTICATION_BACKENDS = [
@@ -110,15 +110,15 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 LOGIN_URL = 'core:login'
-LOGIN_REDIRECT_URL = 'core:dashboard'
+LOGIN_REDIRECT_URL = '/'  # Changed to '/'
 LOGOUT_URL = 'core:logout'
 LOGOUT_REDIRECT_URL = 'core:home'
 
 # django-allauth configuration
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5

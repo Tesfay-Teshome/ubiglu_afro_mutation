@@ -30,14 +30,11 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name', 'description')
 
-@admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    """Admin interface for Project model."""
-    list_display = ('title', 'owner', 'category', 'status', 'created_at', 'updated_at')
-    list_filter = ('status', 'category', 'created_at')
-    search_fields = ('title', 'description', 'owner__username')
-    date_hierarchy = 'created_at'
-    readonly_fields = ('created_at', 'updated_at')
+    list_display = ('title', 'owner', 'category', 'status', 'created_at', 'updated_at')  
+    search_fields = ('title', 'description')
+
+admin.site.register(Project, ProjectAdmin)
 
 @admin.register(DigitalAsset)
 class DigitalAssetAdmin(admin.ModelAdmin):

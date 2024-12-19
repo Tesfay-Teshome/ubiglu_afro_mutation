@@ -7,17 +7,19 @@ import json
 
 class CustomUserCreationForm(UserCreationForm):
     """Custom form for user registration with additional fields."""
-    email = forms.EmailField(required=True)
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}))
     terms_agreement = forms.BooleanField(
         required=True,
-        label='I agree to the Terms of Service and Privacy Policy'
+        label='I agree to the Terms of Service and Privacy Policy',
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
+    profile_image = forms.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'profile_image')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -153,6 +155,17 @@ class ColorPaletteForm(forms.ModelForm):
             except json.JSONDecodeError:
                 raise forms.ValidationError('Invalid JSON format')
         return None
+
+class UserSettingsForm(forms.ModelForm):
+    """Form for updating user settings."""
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your first name'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your last name'}))
+    password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter new password (leave blank to keep current)'}))
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'password']
 
 class ContactForm(forms.Form):
     """Form for contact page."""
