@@ -53,18 +53,15 @@ class CustomLoginForm(LoginForm):
 
 class UserProfileForm(forms.ModelForm):
     """Form for editing user profile information."""
+    profile_image = forms.ImageField(required=False)
+
     class Meta:
         model = UserProfile
-        fields = ['bio', 'avatar', 'phone_number', 'street_address', 'city', 'state', 'country', 'postal_code']
+        fields = ['profile_image', 'bio', 'website', 'location']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
-            'avatar': forms.FileInput(attrs={'accept': 'image/*'}),
-            'phone_number': forms.TextInput(attrs={'placeholder': '+1234567890'}),
-            'street_address': forms.TextInput(attrs={'placeholder': 'Enter your street address'}),
-            'city': forms.TextInput(attrs={'placeholder': 'Enter your city'}),
-            'state': forms.TextInput(attrs={'placeholder': 'Enter your state/province'}),
-            'country': forms.TextInput(attrs={'placeholder': 'Enter your country'}),
-            'postal_code': forms.TextInput(attrs={'placeholder': 'Enter your postal code'})
+            'website': forms.TextInput(attrs={'placeholder': 'Enter your website'}),
+            'location': forms.TextInput(attrs={'placeholder': 'Enter your location'}),
         }
 
 class ProjectForm(forms.ModelForm):

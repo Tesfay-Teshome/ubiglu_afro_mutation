@@ -18,10 +18,10 @@
                         
                         <!-- Avatar Preview -->
                         <div class="text-center mb-4">
-                            {% if user.profile.avatar %}
-                                <img src="{{ user.profile.avatar.url }}" alt="Current Profile Picture" class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            {% if user.userprofile.profile_image %}
+                            <img src="{{ user.userprofile.profile_image.url }}" alt="Current Profile Picture" class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                             {% else %}
-                                <img src="{% static 'core/images/default-avatar.png' %}" alt="Default Profile Picture" class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                <img src="{% static 'core/images/default.jpg' %}" alt="Default Profile Picture" class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                             {% endif %}
                             <div class="small text-muted mb-3">Upload a new avatar or keep your current one</div>
                         </div>

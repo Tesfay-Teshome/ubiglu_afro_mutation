@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, HttpResponse
 from django.views.decorators.http import require_POST
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
@@ -13,8 +14,13 @@ from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabri
 from .forms import ProjectForm, UserProfileForm, CustomUserCreationForm, PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm, UserSettingsForm
 import stripe
 import json
+from django.shortcuts import get_object_or_404
+import logging
 
 stripe.api_key = 'YOUR_STRIPE_SECRET_KEY'  # Replace with your actual Stripe key
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 # Basic Views
 def home(request):
@@ -69,23 +75,25 @@ def profile(request):
     })
 
 @login_required
-def settings(request):
+def user_settings(request):
     """User settings view."""
-    return render(request, 'core/settings.html')
+    return render(request, 'core/user_settings.html')
 
 @login_required
 def edit_profile(request):
     try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        # Create a profile if it does not exist
-        profile = Profile.objects.create(user=request.user)
+        profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user)
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('core:profile')  # Redirect to the profile page
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('core:profile')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = UserProfileForm(instance=profile)
 
@@ -116,15 +124,31 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            next_url = request.GET.get('next', 'core:dashboard')
-            return redirect(next_url)
+        
+        user = User.objects.filter(username=username).first()
+        if user is None:
+            messages.error(request, 'Username does not exist. Please try again.')
         else:
-            messages.error(request, 'Invalid username or password.')
+            # Check if the user has a profile
+            if not hasattr(user, 'profile'):
+                UserProfile.objects.create(user=user)  # Create a profile if it doesn't exist
+                messages.info(request, 'Profile created for this user.')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                next_url = request.GET.get('next', 'core:dashboard')
+                return redirect(next_url)
+            else:
+                messages.error(request, 'Incorrect password. Please try again.')
+                form = AuthenticationForm()
+                return render(request, 'core/auth/login.html', {'form': form})
+        
+        form = AuthenticationForm()  # Recreate the form to return it to the template
+        return render(request, 'core/auth/login.html', {'form': form})
+
+    else:
+        form = AuthenticationForm()
     
-    form = AuthenticationForm()
     return render(request, 'core/auth/login.html', {'form': form})
 
 def logout_view(request):
@@ -136,14 +160,21 @@ def logout_view(request):
 def register(request):
     """Handle user registration with profile image upload."""
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, request.FILES)
+        form = CustomUserCreationForm(request.POST, request.FILES)  # Include request.FILES
         if form.is_valid():
             user = form.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # Specify the backend
-            return redirect('core:dashboard')  # Redirect to a success page
+            # Create a UserProfile instance for the new user
+            UserProfile.objects.create(user=user, profile_image=request.FILES.get('profile_image'))  # Save the profile image correctly to the right directory
+            messages.success(request, 'Registration successful. You can now log in.')
+            logger.info('User registered successfully: %s', user.username)
+            return redirect('core:login')
+        else:
+            logger.error('Registration form is invalid: %s', form.errors)
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'core/auth/register.html', {'form': form})
+    
+    return render(request, 'core/auth/register.html', {'form': form})  # Ensure this points to the correct template location
 
 # Project Views
 def project_list(request):
@@ -373,6 +404,9 @@ def save_design(request):
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def test_view(request):
+    return HttpResponse('Test view works!')
 
 # Error Handlers
 def handler404(request, exception):

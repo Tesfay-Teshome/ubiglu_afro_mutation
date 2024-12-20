@@ -87,22 +87,21 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
-                        {% if project.owner.profile.profile_picture %}
-                        <img src="{{ project.owner.profile.profile_picture.url }}" 
-                             alt="{{ project.owner.username }}" 
-                             class="rounded-circle me-3" 
-                             style="width: 50px; height: 50px; object-fit: cover;">
+                        {% if project.owner.userprofile.profile_image %}
+                            <img src="{{ project.owner.userprofile.profile_image.url }}" 
+                                 alt="Profile Image" 
+                                 style="width: 50px; height: 50px; border-radius: 50%;">
                         {% else %}
-                        <img src="{% static 'core/images/default-profile.png' %}" 
-                             alt="Default Profile" 
-                             class="rounded-circle me-3" 
-                             style="width: 50px; height: 50px; object-fit: cover;">
+                            <img src="/media/user_profile_images/default.jpg" 
+                                 alt="Default Profile Image" 
+                                 style="width: 50px; height: 50px; border-radius: 50%;">
                         {% endif %}
                         <div>
                             <h6 class="mb-0">{{ project.owner.username }}</h6>
                             <small class="text-muted">Member since {{ project.owner.date_joined|date:"F Y" }}</small>
                         </div>
                     </div>
+                            
                     {% if project.owner.profile.bio %}
                     <p class="mb-0">{{ project.owner.profile.bio|truncatewords:30 }}</p>
                     {% endif %}

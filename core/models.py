@@ -9,17 +9,28 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils import timezone
 import os
+from uuid import uuid4
 
 # Encryption Setup
 encryption_key = settings.ENCRYPTION_KEY
 cipher = Fernet(encryption_key)
 
+# Custom upload function for user avatar
+def user_avatar_upload_to(instance, filename):
+    ext = filename.split('.')[-1]
+    return f'user_profile_images/{uuid4()}.{ext}'  # Save images directly in user_profile_images/
+
 # User Profile
 class UserProfile(models.Model):
     """Extended user profile model."""
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_image = models.ImageField(
+        upload_to='user_profile_images/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        default='user_profile_images/default.jpg'
+    )
     bio = models.TextField(max_length=500, blank=True, null=True)
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
     website = models.URLField(max_length=200, blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
     skills = models.CharField(max_length=200, blank=True, null=True, help_text="Comma-separated list of skills")
@@ -42,7 +53,6 @@ class UserProfile(models.Model):
     country = models.CharField(max_length=100, blank=True, null=True)
     postal_code = models.CharField(max_length=20, blank=True, null=True)
     body_measurements = models.JSONField(blank=True, null=True)  # Store self-measurement data
-    avatar_data = models.JSONField(blank=True, null=True)  # Store avatar details or presets
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
@@ -67,18 +77,17 @@ class UserProfile(models.Model):
 # Profile
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = models.ImageField(upload_to='user_profile_images/%Y/%m/%d/', blank=True, null=True, default='default.jpg')
+    profile_image = models.ImageField(
+        upload_to='user_profile_images/%Y/%m/%d/',
+        blank=True,
+        null=True,
+        default='user_profile_images/default.jpg'
+    )
 
     def __str__(self):
         return self.user.username
 
     def save(self, *args, **kwargs):
-        # Override save method to customize the image path
-        if self.profile_image:
-            # Get the unique id of the user
-            user_id = self.user.id
-            # Create a new path for the image
-            self.profile_image.name = f'user_profile_images/{user_id}/{self.profile_image.name}'
         super().save(*args, **kwargs)
 
 # Category

@@ -278,11 +278,10 @@
                 </div>
                 <div class="col-md-6">
                     <div class="mb-4">
-                        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-                        <select id="category" name="category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50">
-                            
-                            {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
+                        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700">Category</label>
+                        <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="form-control">
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
