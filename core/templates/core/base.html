@@ -16,42 +16,72 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'core:home' %}">
-            <img src="{% static 'core/images/logo.svg' %}" alt="Ubiglu Afro Logo" style="width: 50px;">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:home' %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'core:project_list' %}">Projects</a>
-                </li>
-                {% if user.is_authenticated %}
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const toggler = document.querySelector(".navbar-toggler");
+                const collapse = document.querySelector(".collapse");
+        
+                toggler.addEventListener("click", function () {
+                    collapse.classList.toggle("expanded");
+                });
+            });
+        </script>
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <img src="{% static 'core/images/logo.svg' %}" alt="Ubiglu Afro Logo" style="width: 50px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:profile' %}">Profile</a>
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:logout' %}">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:login' %}">Login</a>
+                        <a class="nav-link" href="{% url 'core:project_list' %}">Projects</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:register' %}">Register</a>
+                        <a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a>
                     </li>
-                {% endif %}
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if user.userprofile.profile_image %}
+                                    <img src="{{ user.userprofile.profile_image.url }}" 
+                                         alt="Profile Image" 
+                                         style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;">
+                                {% else %}
+                                    <img src="{% static 'core/images/default.jpg' %}" 
+                                         alt="Default Profile Image" 
+                                         style="width: 40px; height: 40px; border-radius: 50%; margin-right: 5px;">
+                                {% endif %}
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'core:logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'core:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <!-- Main Content -->
     <main>
