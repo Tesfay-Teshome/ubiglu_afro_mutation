@@ -10,7 +10,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h4 class="mb-0">Edit Project</h4>
+                    <h1 class="mb-0">Edit Project</h1>
                 </div>
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" id="project-form">
@@ -52,7 +52,7 @@
                         </div>
 
                         <!-- Basic Information -->
-                        <h5 class="mb-3">Basic Information</h5>
+                        <h5 class="mb-3">Project Details</h5>
                         <div class="row mb-4">
                             <div class="col-12 mb-3">
                                 {{ form.title|as_crispy_field }}
@@ -66,30 +66,12 @@
                             <div class="col-12">
                                 {{ form.description|as_crispy_field }}
                             </div>
-                        </div>
-
-                        <!-- Project Details -->
-                        <h5 class="mb-3">Project Details</h5>
-                        <div class="row mb-4">
-                            <div class="col-md-6 mb-3">
-                                {{ form.status|as_crispy_field }}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                {{ form.visibility|as_crispy_field }}
-                            </div>
                             <div class="col-12">
-                                {{ form.tags|as_crispy_field }}
+                                {{ form.image|as_crispy_field }}
                             </div>
                         </div>
 
-                        <!-- Additional Information -->
-                        <h5 class="mb-3">Additional Information</h5>
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                {{ form.additional_info|as_crispy_field }}
-                            </div>
-                        </div>
-
+                                                      
                         <!-- Submit Buttons -->
                         <div class="d-flex justify-content-between">
                             <a href="{% url 'core:project_detail' project.pk %}" class="btn btn-outline-secondary">
@@ -124,7 +106,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{% url 'core:delete_project' project.pk %}" method="post" class="d-inline">
+                <form action="{% url 'core:project_delete' project.pk %}" method="post" class="d-inline">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Delete Project</button>
                 </form>

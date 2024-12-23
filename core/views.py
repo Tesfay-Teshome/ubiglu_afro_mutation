@@ -256,29 +256,24 @@ def project_create(request):
         'categories': categories  # Pass categories to the template
     })
 
-def project_detail(request, pk):
+def project_detail(request, project_id):
     """Display project details."""
-    project = get_object_or_404(Project, pk=pk)
+    project = get_object_or_404(Project, id=project_id)
     return render(request, 'core/project_detail.html', {'project': project})
 
 @login_required
-def project_edit(request, pk):
-    """Edit an existing project."""
-    project = get_object_or_404(Project, pk=pk)
-    if project.owner != request.user:
-        messages.error(request, 'You do not have permission to edit this project.')
-        return redirect('core:project_detail', pk=pk)
-    
+def edit_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+
     if request.method == 'POST':
-        form = ProjectForm(request.POST, request.FILES, instance=project)
+        form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Project updated successfully!')
-            return redirect('core:project_detail', pk=pk)
+            return redirect('core:project_detail', project_id=project.id)  # Redirect after saving
     else:
-        form = ProjectForm(instance=project)
-    return render(request, 'core/project_form.html', {'form': form, 'title': 'Edit Project'})
+        form = ProjectForm(instance=project)  # Pre-fill the form with existing project data
 
+    return render(request, 'core/edit_project.html', {'form': form, 'project': project})
 @login_required
 def project_delete(request, pk):
     """Delete a project."""
