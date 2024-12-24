@@ -13,11 +13,12 @@ from rest_framework.response import Response
 from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabric, Design, Profile
 from .forms import ProjectForm, UserProfileForm, CustomUserCreationForm, PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm, UserSettingsForm
 import stripe
+from django.conf import settings
 import json
 from django.shortcuts import get_object_or_404
 import logging
 
-stripe.api_key = 'YOUR_STRIPE_SECRET_KEY'  # Replace with your actual Stripe key
+stripe.api_key = settings.STRIPE_TEST_SECRET_KEY  # Replace with your actual Stripe key
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -288,12 +289,11 @@ def project_delete(request, pk):
         return redirect('core:project_list')
     return render(request, 'core/project_confirm_delete.html', {'project': project})
 
-# Payment Views
 @login_required
 def create_payment(request, project_id):
-    """Create a payment session for a project."""
+    """Create a Stripe payment session for a project."""
     project = get_object_or_404(Project, id=project_id)
-    
+
     try:
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -303,7 +303,7 @@ def create_payment(request, project_id):
                     'product_data': {
                         'name': project.title,
                     },
-                    'unit_amount': int(project.price * 100),  # Convert to cents
+                    'unit_amount': int(project.price * 100),  # Convert dollars to cents
                 },
                 'quantity': 1,
             }],
@@ -315,11 +315,13 @@ def create_payment(request, project_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
 
+@login_required
 def payment_success(request):
     """Handle successful payment."""
     messages.success(request, 'Payment successful! Thank you for your purchase.')
     return redirect('core:dashboard')
 
+@login_required
 def payment_cancel(request):
     """Handle cancelled payment."""
     messages.warning(request, 'Payment cancelled.')

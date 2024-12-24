@@ -75,7 +75,9 @@
                                 <label class="form-label">Country</label>
                                 <select class="form-select" id="country" required>
                                     <option value="">Select Country</option>
-                                    <!-- Add country options dynamically -->
+                                    {% for country in countries %}
+                                    <option value="{{ country.code }}">{{ country.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-6">
@@ -106,7 +108,7 @@
 
                         <!-- Submit Button -->
                         <div class="d-flex justify-content-between">
-                            <a href="{% url 'core:project_detail' project.pk %}" class="btn btn-outline-secondary">
+                            <a href="{% url 'core:project_detail' project.id %}" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to Project
                             </a>
                             <button type="submit" class="btn btn-primary" id="submit-button">
@@ -209,7 +211,7 @@
                 processingModal.hide();
             } else {
                 // Send payment method ID to server
-                fetch('{% url "core:process_payment" project.pk %}', {
+                fetch(`/payment/${project.id}/process/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -253,7 +255,7 @@
     });
 
     function confirmPayment(paymentIntentId) {
-        fetch('{% url "core:confirm_payment" project.pk %}', {
+        fetch(`/payment/${project.id}/confirm/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -275,21 +277,5 @@
             }
         });
     }
-
-    // Populate countries dropdown
-    const countries = [
-        {code: 'US', name: 'United States'},
-        {code: 'GB', name: 'United Kingdom'},
-        {code: 'CA', name: 'Canada'},
-        // Add more countries as needed
-    ];
-
-    const countrySelect = document.getElementById('country');
-    countries.forEach(country => {
-        const option = document.createElement('option');
-        option.value = country.code;
-        option.textContent = country.name;
-        countrySelect.appendChild(option);
-    });
 </script>
 {% endblock %}

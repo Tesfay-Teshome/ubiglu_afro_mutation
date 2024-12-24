@@ -69,13 +69,16 @@
                 <div class="card-body">
                     <h3 class="text-center mb-3">${{ project.price }}</h3>
                     {% if user.is_authenticated and user != project.owner %}
-                        <a href="{% url 'core:create_payment' project.id %}" class="btn btn-success btn-lg w-100">
-                            <i class="fas fa-shopping-cart"></i> Purchase Now
-                        </a>
+                       <button 
+                          class="btn btn-success btn-lg w-100" 
+                          id="purchase-button" 
+                          data-project-id="{{ project.id }}">
+                          <i class="fas fa-shopping-cart"></i> Purchase Now
+                       </button>
                     {% elif not user.is_authenticated %}
-                        <a href="{% url 'core:login' %}" class="btn btn-primary btn-lg w-100">
-                            <i class="fas fa-sign-in-alt"></i> Login to Purchase
-                        </a>
+                       <a href="{% url 'core:login' %}" class="btn btn-primary btn-lg w-100">
+                          <i class="fas fa-sign-in-alt"></i> Login to Purchase
+                       </a>
                     {% endif %}
                 </div>
             </div>

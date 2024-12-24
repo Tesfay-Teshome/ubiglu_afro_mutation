@@ -65,7 +65,7 @@ urlpatterns = [
     path('projects/<int:project_id>/delete/', views.project_delete, name='project_delete'),
     
     # Payment Views
-    path('payment/<int:project_id>/create/', views.create_payment, name='create_payment'),
+    path('create-payment/<int:project_id>/', views.create_payment, name='create_payment'),
     path('payment/success/', views.payment_success, name='payment_success'),
     path('payment/cancel/', views.payment_cancel, name='payment_cancel'),
     
