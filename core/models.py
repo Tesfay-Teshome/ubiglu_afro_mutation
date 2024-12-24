@@ -117,6 +117,8 @@ class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_sales = models.IntegerField(default=0)
+    total_earnings = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     status = models.CharField(max_length=20, choices=[
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),

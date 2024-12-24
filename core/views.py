@@ -50,22 +50,35 @@ def contact(request):
     })
 
 @login_required
-def dashboard(request):
+def  dashboard(request):
     """User dashboard view."""
     total_projects = Project.objects.filter(owner=request.user).count()
-    user_projects = Project.objects.filter(owner=request.user).order_by('-created_at')[:5]
-    user_assets = DigitalAsset.objects.filter(user=request.user)
-    user_payments = Payment.objects.filter(user=request.user)
-    total_earnings = sum(project.price for project in Project.objects.filter(owner=request.user))
-    total_sales = Payment.objects.filter(user=request.user).count()
+    
+    # Get all projects owned by the user
+    projects = Project.objects.filter(owner=request.user).order_by('-created_at')  # Removed the limit to show all projects
+    
+    # Get digital assets owned by the user
+    assets = DigitalAsset.objects.filter(user=request.user)
+    
+    # Get payments made by the user
+    payments = Payment.objects.filter(user=request.user)
+    
+    # Calculate total earnings from all projects owned by the user
+    total_earnings = sum(project.total_earnings for project in projects)  # Use the total_earnings field from the Project model
+    
+    # Calculate total sales from all payments made by the user
+    total_sales = sum(project.total_sales for project in projects)  # Use the total_sales field from the Project model
+
+    # Prepare context for rendering
     context = {
-        'projects': user_projects,
+        'projects': projects,
         'total_projects': total_projects,
-        'assets': user_assets,
-        'payments': user_payments,
+        'assets': assets,
+        'payments': payments,
         'total_earnings': total_earnings,
         'total_sales': total_sales
     }
+    
     return render(request, 'core/dashboard.html', context)
 
 @login_required
@@ -240,7 +253,7 @@ def project_create(request):
                 )
             
             messages.success(request, 'Project created successfully!')
-            return redirect('core:project_detail', pk=project.pk)
+            return redirect('core:project_detail', project_id=project.id)
         else:
             print(f"Form errors: {form.errors}")  # Debugging statement
     else:
@@ -276,9 +289,9 @@ def edit_project(request, project_id):
 
     return render(request, 'core/edit_project.html', {'form': form, 'project': project})
 @login_required
-def project_delete(request, pk):
+def project_delete(request, project_id):
     """Delete a project."""
-    project = get_object_or_404(Project, pk=pk)
+    project = get_object_or_404(Project, id=project_id)
     if project.owner != request.user:
         messages.error(request, 'You do not have permission to delete this project.')
         return redirect('core:project_detail', pk=pk)
@@ -293,6 +306,7 @@ def project_delete(request, pk):
 def create_payment(request, project_id):
     """Create a Stripe payment session for a project."""
     project = get_object_or_404(Project, id=project_id)
+    request.session['project_id'] = project.id
 
     try:
         session = stripe.checkout.Session.create(
@@ -314,12 +328,27 @@ def create_payment(request, project_id):
         return JsonResponse({'sessionId': session.id})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400)
+    
 
 @login_required
 def payment_success(request):
     """Handle successful payment."""
+    # Retrieve the project ID from the session
+    project_id = request.session.get('project_id')
+
+    if project_id is None:
+        messages.error(request, 'No project ID found in session.')
+        return redirect('core:dashboard')
+
+    project = get_object_or_404(Project, id=project_id)
+
+    # Increment the sales count and update total earnings
+    project.total_sales += 1
+    project.total_earnings += project.price  # Add the price to total earnings
+    project.save()
+
     messages.success(request, 'Payment successful! Thank you for your purchase.')
-    return redirect('core:dashboard')
+    return redirect('core:project_detail', project_id=project.id)
 
 @login_required
 def payment_cancel(request):
