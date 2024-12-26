@@ -1,0 +1,3 @@
+user,name,description,measurements,style_options,thumbnail
+user1,Design1,Description for design1,"{""chest"": ""38""}","{""style"": ""casual""}",/path/to/thumbnail1.jpg
+user2,Design2,Description for design2,"{""waist"": ""30""}","{""style"": ""formal""}",/path/to/thumbnail2.jpg

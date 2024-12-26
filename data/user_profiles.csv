@@ -1,0 +1,3 @@
+user,profile_image,bio,website,location,skills,interests
+user1,/path/to/image1.jpg,Bio for user1,www.user1.com,Location1,Skill1,Interest1
+user2,/path/to/image2.jpg,Bio for user2,www.user2.com,Location2,Skill2,Interest2

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',  # Added 'corsheaders' to INSTALLED_APPS
     # Local apps
     'core',
+    'import_export',
 ]
 
 MIDDLEWARE = [

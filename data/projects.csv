@@ -1,0 +1,3 @@
+title,description,owner,category,price,total_sales,total_earnings,status,image
+Project1,Description for project1,user1,category1,100.00,10,1000.00,draft,/path/to/image.jpg
+Project2,Description for project2,user2,category2,200.00,5,500.00,in_progress,/path/to/image2.jpg

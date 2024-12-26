@@ -1,0 +1,3 @@
+name,description,image,project,category,price,weight,color,texture
+Fabric1,Description for fabric1,/path/to/fabric1.jpg,Project1,category1,50.00,200.00,Red,Smooth
+Fabric2,Description for fabric2,/path/to/fabric2.jpg,Project2,category2,75.00,300.00,Blue,Rough

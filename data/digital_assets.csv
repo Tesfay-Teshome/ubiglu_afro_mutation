@@ -1,0 +1,3 @@
+title,description,user,category,file,file_type,tags
+Asset1,Description for asset1,user1,category1,/path/to/file1.jpg,image,"tag1,tag2"
+Asset2,Description for asset2,user2,category2,/path/to/file2.mp4,video,"tag3,tag4"

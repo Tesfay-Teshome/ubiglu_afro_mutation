@@ -1,0 +1,3 @@
+user,status,shipping_details,progress
+user1,Shipped,"{""address"": ""123 Main St""}",50.0
+user2,In Transit,"{""address"": ""456 Elm St""}",75.0

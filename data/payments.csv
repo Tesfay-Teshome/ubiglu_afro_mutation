@@ -1,0 +1,3 @@
+user,amount,transaction_id,payment_date,payment_method,status
+user1,100.00,TX12345,2024-01-01,Credit Card,Completed
+user2,150.00,TX12346,2024-01-02,PayPal,Pending
