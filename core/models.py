@@ -111,25 +111,26 @@ class Category(models.Model):
 
 # Project
 class Project(models.Model):
-    """Model for user projects."""
+    """Enhanced Project Model with Earnings and Sales Tracking."""
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    total_sales = models.IntegerField(default=0)
-    total_earnings = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    total_sales = models.IntegerField(default=0)  # Tracks number of sales
+    total_earnings = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)  # Tracks earnings
     status = models.CharField(max_length=20, choices=[
         ('draft', 'Draft'),
-        ('in_progress', 'In Progress'),
+        ('published', 'Published'),
         ('completed', 'Completed'),
-        ('archived', 'Archived'),
     ], default='draft')
     image = models.ImageField(upload_to='project_images/', blank=True)
+    design_data = models.JSONField(null=True, blank=True)  # Stores design details
+    measurements = models.JSONField(null=True, blank=True)  # Stores measurements
+    visibility = models.BooleanField(default=True)  # Visibility toggle
+    tags = models.CharField(max_length=200, blank=True, help_text="Comma-separated tags")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    design_data = models.JSONField(null=True, blank=True)
-    measurements = models.JSONField(null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -139,6 +140,17 @@ class Project(models.Model):
 
     def get_absolute_url(self):
         return reverse('core:project_detail', kwargs={'pk': self.pk})
+
+    def update_sales_and_earnings(self, price):
+        """Update total sales and earnings for the project."""
+        self.total_sales += 1
+        self.total_earnings += price
+        self.save()
+
+    @property
+    def tags_list(self):
+        """Converts comma-separated tags into a list."""
+        return [tag.strip() for tag in self.tags.split(',') if tag.strip()]
 
 # Digital Asset
 class DigitalAsset(models.Model):

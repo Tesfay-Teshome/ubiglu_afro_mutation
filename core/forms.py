@@ -65,10 +65,9 @@ class UserProfileForm(forms.ModelForm):
         }
 
 class ProjectForm(forms.ModelForm):
-    """Form for creating and editing projects."""
     class Meta:
         model = Project
-        fields = ['title', 'description', 'category', 'price', 'image']
+        fields = ['title', 'category', 'price', 'description', 'status', 'visibility', 'tags','image']  # Include additional_info if it exists in the model
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
             'price': forms.NumberInput(attrs={'min': 0, 'step': 0.01}),

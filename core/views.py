@@ -263,7 +263,7 @@ def project_create(request):
     fabrics = Fabric.objects.all()
     categories = Category.objects.all()  # Retrieve categories
     print(f"Categories: {[cat.name for cat in categories]}")  # Debugging output
-    return render(request, 'core/project_form.html', {
+    return render(request, 'core/create_project.html', {
         'form': form,
         'title': 'Create Project',
         'fabrics': fabrics,
@@ -273,7 +273,9 @@ def project_create(request):
 def project_detail(request, project_id):
     """Display project details."""
     project = get_object_or_404(Project, id=project_id)
-    return render(request, 'core/project_detail.html', {'project': project})
+    form = ProjectForm(instance=project)  # Ensure you are passing the project instance
+    print(form.errors)  # This will show any validation errors
+    return render(request, 'core/project_detail.html', {'form': form, 'project': project})
 
 @login_required
 def edit_project(request, project_id):

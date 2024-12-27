@@ -5,44 +5,136 @@
 {% block title %}Create New Project - Ubiglu Afro Mutation{% endblock %}
 
 {% block content %}
+{% block extra_head %}
+<style>
+    body {
+        background-color: #f8f9fa; /* Light background for the entire page */
+    }
+    
+    .container {
+        margin-top: 2rem; /* Space above the container */
+    }
+    
+    .card {
+        border-radius: 10px; /* Rounded corners for the card */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    }
+    
+    .card-header {
+        background-color: #007bff; /* Blue background for header */
+        color: white; /* White text color */
+        border-top-left-radius: 10px; /* Rounded top left corner */
+        border-top-right-radius: 10px; /* Rounded top right corner */
+    }
+    
+    h4, h5 {
+        margin-bottom: 1rem; /* Space below headings */
+    }
+    
+    .form-label {
+        font-weight: bold; /* Bold labels for better readability */
+    }
+    
+    .row {
+        margin-bottom: 1.5rem; /* Space between rows */
+    }
+    
+    .custom-file-upload {
+        border: 2px dashed #007bff; /* Dashed border for file upload area */
+        border-radius: 10px; /* Rounded corners */
+        padding: 2rem; /* Padding inside the upload area */
+        cursor: pointer; /* Pointer cursor on hover */
+        transition: background 0.3s ease; /* Smooth background transition */
+        text-align: center; /* Centered text */
+    }
+    
+    .custom-file-upload:hover {
+        background: #e9ecef; /* Light background on hover */
+    }
+    
+    .form-control {
+        border-radius: 8px; /* Rounded corners for inputs */
+        border: 1px solid #ced4da; /* Light border color */
+        padding: 0.75rem; /* Padding inside inputs */
+    }
+    
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Focus shadow */
+        border-color: #80bdff; /* Border color on focus */
+    }
+    
+    .btn-primary {
+        border-radius: 8px; /* Rounded corners for buttons */
+        padding: 0.75rem 1.5rem; /* Padding inside buttons */
+        background-color: #007bff; /* Blue background for primary buttons */
+        border: none; /* Remove default border */
+        color: white; /* White text color */
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+    
+    .text-danger {
+        color: #dc3545; /* Red color for error messages */
+    }
+    
+    .texture-list {
+        display: grid; /* Grid layout for texture items */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive grid */
+        gap: 1rem; /* Space between items */
+    }
+    
+    .texture-item {
+        cursor: pointer; /* Pointer cursor on hover */
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+        transition: transform 0.2s; /* Smooth scaling on hover */
+    }
+    
+    .texture-item:hover {
+        transform: scale(1.05); /* Slightly enlarge on hover */
+    }
+    
+    .texture-item img {
+        width: 100%; /* Full width for images */
+        height: 100px; /* Fixed height */
+        object-fit: cover; /* Cover the area without distortion */
+    }
+    
+    .measurement-input {
+        margin-bottom: 1rem; /* Space below measurement inputs */
+    }
+    
+</style>
+{% endblock extra_head %}
+
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h4 class="mb-0">Create New Project</h4>
+                    <h4 class="mb-0 title">Create New Project</h4>
                 </div>
+                
+                <style>
+                    /* Existing styles... */
+                
+                    .title {
+                        color: white; /* Change text color to white */
+                        text-align: center; /* Center the title */
+                        font-weight: bold; /* Make the title bold */
+                        font-size: 1.5rem; /* Increase the font size */
+                        padding: 1rem; /* Add padding around the title */
+                        background-color: #007bff; /* Blue background */
+                        border-radius: 10px; /* Rounded corners for the background */
+                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+                    }
+                </style>
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" id="project-form">
                         {% csrf_token %}
                         
-                        <!-- Project Image -->
-                        <div class="text-center mb-4">
-                            <div class="position-relative d-inline-block">
-                                <img src="{% static 'core/images/default-project.jpg' %}" 
-                                     alt="Project Image Preview" 
-                                     id="project-image-preview"
-                                     class="img-fluid rounded"
-                                     style="max-width: 300px; max-height: 200px; object-fit: cover;">
-                                <label for="{{ form.image.id_for_label }}" 
-                                       class="btn btn-sm btn-primary position-absolute bottom-0 end-0"
-                                       style="cursor: pointer;">
-                                    <i class="fas fa-camera"></i>
-                                </label>
-                            </div>
-                            <input type="file" 
-                                   name="{{ form.image.name }}" 
-                                   id="{{ form.image.id_for_label }}" 
-                                   class="d-none"
-                                   accept="image/*"
-                                   onchange="previewProjectImage(this);">
-                            {% if form.image.errors %}
-                            <div class="text-danger mt-2">
-                                {{ form.image.errors }}
-                            </div>
-                            {% endif %}
-                        </div>
-
                         <!-- Basic Information -->
                         <h5 class="mb-3">Basic Information</h5>
                         <div class="row mb-4">
@@ -57,6 +149,84 @@
                             </div>
                             <div class="col-12">
                                 {{ form.description|as_crispy_field }}
+                            </div>
+                        </div>
+                        
+                        <!-- Project Image -->
+                        <div class="col-md-6">
+                            <label class="form-label">Upload Reference Image</label>
+                            <div class="custom-file-upload">
+                                <input type="file" 
+                                       id="project-image-input" 
+                                       name="image" 
+                                       accept="image/*" 
+                                       onchange="previewProjectImage(this);" 
+                                       class="form-control">
+                                <div id="imagePreview" class="mt-2">
+                                    <img id="project-image-preview" 
+                                         src=""  
+                                         alt="imagePreview" 
+                                         class="img-fluid rounded" 
+                                         style="width: 300px; height: 200px; object-fit: contain; display: none;"> <!-- Hide by default -->
+                                </div>
+                            </div>
+                            {% if form.image.errors %}
+                            <div class="text-danger mt-2">
+                                {{ form.image.errors }}
+                            </div>
+                            {% endif %}
+                            <!-- Hidden fields for 3D design data -->
+                            <input type="hidden" name="design_data" id="designData">
+                            <input type="hidden" name="measurements" id="measurementsData">
+                        </div>
+
+                        <script>
+                        function previewProjectImage(input) {
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+                                reader.onload = function(e) {
+                                    var preview = document.getElementById('project-image-preview');
+                                    preview.src = e.target.result; // Update image preview
+                                    preview.style.display = 'block'; // Show the preview
+                                }
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                        }
+                        </script>
+
+                        <h5 class="mb-3">Design Tools</h5>
+                        
+                        <!-- Fabric Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">Select Fabric</label>
+                            <select class="form-select" id="fabricSelect">
+                                <option value="">Choose a fabric...</option>
+                                <option value="cotton">Cotton</option>
+                                <option value="silk">Silk</option>
+                                <option value="wool">Wool</option>
+                                <option value="linen">Linen</option>
+                            </select>
+                        </div>
+
+                        <!-- Color Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">Choose Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="colorPicker" value="#563d7c">
+                        </div>
+
+                        <!-- Pattern Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">Select Pattern</label>
+                            <div class="texture-list">
+                                <div class="texture-item">
+                                    <img src="{% static 'core/images/patterns/pattern1.jpg' %}" alt="Pattern 1">
+                                </div>
+                                <div class="texture-item">
+                                    <img src="{% static 'core/images/patterns/pattern2.jpg' %}" alt="Pattern 2">
+                                </div>
+                                <div class="texture-item">
+                                    <img src="{% static 'core/images/patterns/pattern3.jpg' %}" alt="Pattern 3">
+                                </div>
                             </div>
                         </div>
 
@@ -74,11 +244,43 @@
                             </div>
                         </div>
 
-                        <!-- Additional Information -->
-                        <h5 class="mb-3">Additional Information</h5>
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                {{ form.additional_info|as_crispy_field }}
+                        <div class="controls-container">
+                            <h5>Design Controls</h5>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Color</label>
+                                <input type="color" class="form-control form-control-color" id="color-picker">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Pattern</label>
+                                <select class="form-select" id="pattern-select">
+                                    <option value="solid">Solid</option>
+                                    <option value="stripes">Stripes</option>
+                                    <option value="dots">Dots</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                            
+                            <h5 class="mt-4">Measurements</h5>
+                            <div class="measurement-input">
+                                <label class="form-label">Chest (cm)</label>
+                                <input type="number" class="form-control" name="chest" min="0" step="0.1">
+                            </div>
+                            
+                            <div class="measurement-input">
+                                <label class="form-label">Waist (cm)</label>
+                                <input type="number" class="form-control" name="waist" min="0" step="0.1">
+                            </div>
+                            
+                            <div class="measurement-input">
+                                <label class="form-label">Hip (cm)</label>
+                                <input type="number" class="form-control" name="hip" min="0" step="0.1">
+                            </div>
+                            
+                            <div class="measurement-input">
+                                <label class="form-label">Length (cm)</label>
+                                <input type="number" class="form-control" name="length" min="0" step="0.1">
                             </div>
                         </div>
 
@@ -101,36 +303,140 @@
 
 {% block extra_js %}
 <script>
-    function previewProjectImage(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('project-image-preview').src = e.target.result;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure Fabric and THREE are accessible
+        const fabric = window.fabric;
+        const THREE = window.THREE;
+
+        if (!fabric) {
+            console.error("Fabric.js is not loaded.");
+        }
+
+        if (!THREE) {
+            console.error("THREE.js is not loaded.");
+        }
+
+        // Declare variables in the global scope
+        let scene, camera, renderer;
+
+        function init3DViewer() {
+            if (!THREE) {
+                console.error("THREE.js is not loaded.");
+                return;
             }
-            reader.readAsDataURL(input.files[0]);
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas3D'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 1, 0);
+            scene.add(directionalLight);
+            
+            camera.position.z = 5;
+            
+            animate();
         }
-    }
 
-    // Initialize select2 for tags if available
-    if ($.fn.select2) {
-        $('#id_tags').select2({
-            tags: true,
-            tokenSeparators: [',', ' '],
-            placeholder: 'Enter tags...',
-            theme: 'bootstrap-5'
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        // Event listeners for fabric selection and color picker
+        document.getElementById('fabricSelect').addEventListener('change', function(e) {
+            updateFabricPreview(e.target.value);
         });
-    }
 
-    // Form validation
-    document.getElementById('project-form').addEventListener('submit', function(e) {
-        var title = document.getElementById('id_title').value;
-        var description = document.getElementById('id_description').value;
-        var price = document.getElementById('id_price').value;
-        
-        if (!title || !description || !price) {
-            e.preventDefault();
-            alert('Please fill in all required fields.');
-        }
+        document.getElementById('colorPicker').addEventListener('input', function(e) {
+            // Handle color change
+        });
+
+        // Initialize the 3D viewer
+        init3DViewer();
     });
 </script>
+
+<script>
+    // Initialize Fabric.js canvas
+    const canvas = new fabric.Canvas('fabric-canvas');
+    
+    // Initialize Three.js scene for 3D preview
+    const threeScene = new THREE.Scene();
+    const threeCamera = new THREE.PerspectiveCamera(75, 600 / 400, 0.1, 1000);
+    const threeRenderer = new THREE.WebGLRenderer();
+    threeRenderer.setSize(600, 400);
+    
+    // Add basic lighting
+    const light = new THREE.AmbientLight(0xffffff, 0.5);
+    threeScene.add(light);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 1, 1);
+    threeScene.add(directionalLight);
+    
+    // Position camera
+    threeCamera.position.z = 5;
+    
+    // Handle fabric selection
+    document.querySelectorAll('.fabric-preview').forEach(preview => {
+        preview.addEventListener('click', function() {
+            document.querySelectorAll('.fabric-preview').forEach(p => 
+                p.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Load fabric texture
+            const fabricUrl = this.src;
+            fabric.Image.fromURL(fabricUrl, function(img) {
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+                    scaleX: canvas.width / img.width,
+                    scaleY: canvas.height / img.height
+                });
+            });
+        });
+    });
+    
+    // Handle color changes
+    document.getElementById('color-picker').addEventListener('input', function(e) {
+        const color = e.target.value;
+        if (canvas.getActiveObject()) {
+            canvas.getActiveObject().set('fill', color);
+            canvas.renderAll();
+        }
+    });
+    
+    // Handle pattern selection
+    document.getElementById('pattern-select').addEventListener('change', function(e) {
+        const pattern = e.target.value;
+        // Implement pattern application logic here
+    });
+    
+    // Save design data before form submission
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        // Capture design data
+        const designData = {
+            canvasJSON: canvas.toJSON(),
+            selectedFabric: document.querySelector('.fabric-preview.selected')?.dataset.fabricId,
+            selectedPattern: document.getElementById('pattern-select').value,
+            selectedColor: document.getElementById('color-picker').value
+        };
+        
+        // Capture measurements
+        const measurements = {
+            chest: document.querySelector('input[name="chest"]').value,
+            waist: document.querySelector('input[name="waist"]').value,
+            hip: document.querySelector('input[name="hip"]').value,
+            length: document.querySelector('input[name="length"]').value
+        };
+        
+        // Set hidden field values
+        document.getElementById('design-data').value = JSON.stringify(designData);
+        document.getElementById('measurements-data').value = JSON.stringify(measurements);
+    });
+</script>
+
 {% endblock %}
