@@ -277,15 +277,20 @@ def project_detail(request, project_id):
     print(form.errors)  # This will show any validation errors
     return render(request, 'core/project_detail.html', {'form': form, 'project': project})
 
+
 @login_required
 def edit_project(request, project_id):
+    """Edit an existing project."""
     project = get_object_or_404(Project, id=project_id)
 
     if request.method == 'POST':
-        form = ProjectForm(request.POST, instance=project)
+        form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Project updated successfully!')
             return redirect('core:project_detail', project_id=project.id)  # Redirect after saving
+        else:
+            messages.error(request, 'There was an error updating the project. Please check the form.')
     else:
         form = ProjectForm(instance=project)  # Pre-fill the form with existing project data
 
