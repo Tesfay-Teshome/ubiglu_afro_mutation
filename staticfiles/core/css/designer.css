@@ -1,0 +1,211 @@
+/* Designer Layout */
+.designer-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1rem;
+    height: calc(100vh - 70px);
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+/* Toolbar Styles */
+.toolbar {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.tool-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.tool-section:last-child {
+    border-bottom: none;
+}
+
+.tool-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #212529;
+    font-weight: 600;
+}
+
+/* Fabric Grid */
+.fabric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.fabric-item {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: all 0.2s ease;
+}
+
+.fabric-item:hover {
+    transform: scale(1.05);
+    border-color: #0d6efd;
+}
+
+.fabric-item.selected {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 2px #0d6efd;
+}
+
+.fabric-name {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 0.25rem;
+    font-size: 0.8rem;
+    border-radius: 0 0 8px 8px;
+    text-align: center;
+}
+
+/* Color Picker */
+.color-picker {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.color-picker input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Measurements Form */
+.measurements-form input {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem;
+}
+
+/* Style Options */
+.style-options .btn-group {
+    width: 100%;
+}
+
+.style-options .btn {
+    flex: 1;
+}
+
+/* 3D Viewer */
+.viewer {
+    background: white;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+#designCanvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.viewer-controls {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.9);
+    padding: 0.5rem;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.viewer-controls .btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+/* Action Buttons */
+.actions .btn {
+    padding: 0.75rem;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .designer-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: auto;
+    }
+
+    .toolbar {
+        max-height: none;
+        overflow: visible;
+    }
+
+    .viewer {
+        height: 60vh;
+    }
+}
+
+/* Animation Effects */
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+/* Custom Form Controls */
+.form-select, .form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+}
+
+/* Loading State */
+.viewer.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #0d6efd;
+}

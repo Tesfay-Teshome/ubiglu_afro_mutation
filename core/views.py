@@ -262,7 +262,7 @@ def project_create(request):
     # Get available fabrics for the designer
     fabrics = Fabric.objects.all()
     categories = Category.objects.all()  # Retrieve categories
-    print(f"Categories: {[cat.name for cat in categories]}")  # Debugging output
+    # print(f"Categories: {[cat.name for cat in categories]}")  
     return render(request, 'core/create_project.html', {
         'form': form,
         'title': 'Create Project',

@@ -105,6 +105,29 @@
     .measurement-input {
         margin-bottom: 1rem; /* Space below measurement inputs */
     }
+
+    .texture-list {
+        display: grid; /* Use grid layout */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Responsive grid */
+        gap: 1rem; /* Space between items */
+    }
+    
+    .texture-item {
+        cursor: pointer; /* Pointer cursor on hover */
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden; /* Hide overflow */
+        transition: transform 0.2s; /* Smooth scaling on hover */
+    }
+    
+    .texture-item:hover {
+        transform: scale(1.05); /* Slightly enlarge on hover */
+    }
+    
+    .texture-item img {
+        width: 100%; /* Full width for images */
+        height: auto; /* Maintain aspect ratio */
+        object-fit: cover; /* Cover the area without distortion */
+    }
     
 </style>
 {% endblock extra_head %}
@@ -211,23 +234,7 @@
                         <!-- Color Selection -->
                         <div class="mb-4">
                             <label class="form-label">Choose Color</label>
-                            <input type="color" class="form-control form-control-color w-100" id="colorPicker" value="#563d7c">
-                        </div>
-
-                        <!-- Pattern Selection -->
-                        <div class="mb-4">
-                            <label class="form-label">Select Pattern</label>
-                            <div class="texture-list">
-                                <div class="texture-item">
-                                    <img src="{% static 'core/images/patterns/pattern1.jpg' %}" alt="Pattern 1">
-                                </div>
-                                <div class="texture-item">
-                                    <img src="{% static 'core/images/patterns/pattern2.jpg' %}" alt="Pattern 2">
-                                </div>
-                                <div class="texture-item">
-                                    <img src="{% static 'core/images/patterns/pattern3.jpg' %}" alt="Pattern 3">
-                                </div>
-                            </div>
+                            <input type="color" class="form-control form-control-color w-50" id="colorPicker" value="#563d7c">
                         </div>
 
                         <!-- Project Details -->
