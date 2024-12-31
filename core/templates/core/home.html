@@ -67,7 +67,7 @@
             </a>
         </div>
         <div class="row g-4">
-            {% for project in projects %}
+            {% for project in latest_projects %}  <!-- Ensure this matches the context variable passed from the view -->
                 <div class="col-md-4">
                     <div class="card h-100">
                         {% if project.image %}

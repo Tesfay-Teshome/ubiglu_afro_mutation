@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 # Basic Views
 def home(request):
     """Home page view."""
-    latest_projects = Project.objects.filter(status='published').order_by('-created_at')[:3]
+    latest_projects = Project.objects.filter(status='published').order_by('-created_at')[:5]
     categories = Category.objects.all()
     return render(request, 'core/home.html', {'latest_projects': latest_projects, 'categories': categories})
 
@@ -103,6 +103,14 @@ def edit_profile(request):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
+            clear_image = form.cleaned_data.get('clear_image')
+
+            # Clear the previous image if the checkbox is checked
+            if clear_image:
+                profile.profile_image.delete()  # Delete the old image from storage
+                profile.profile_image = None  # Clear the field
+
+            # Save the new profile image if uploaded
             form.save()
             messages.success(request, 'Profile updated successfully.')
             return redirect('core:profile')

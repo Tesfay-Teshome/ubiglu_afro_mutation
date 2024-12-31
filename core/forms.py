@@ -54,15 +54,23 @@ class CustomLoginForm(LoginForm):
 class UserProfileForm(forms.ModelForm):
     """Form for editing user profile information."""
     profile_image = forms.ImageField(required=False)
-
+    clear_image = forms.BooleanField(required=False, initial=False, label="Clear previous image")
     class Meta:
         model = UserProfile
-        fields = ['profile_image', 'bio', 'website', 'location']
+        fields = ['profile_image', 'clear_image', 'bio', 'website', 'location']
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
             'website': forms.TextInput(attrs={'placeholder': 'Enter your website'}),
             'location': forms.TextInput(attrs={'placeholder': 'Enter your location'}),
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        clear_image = cleaned_data.get("clear_image")
+        profile_image = cleaned_data.get("profile_image")
+
+        # Check if the user wants to clear the image but hasn't uploaded a new one
+        if clear_image and not profile_image:
+            raise forms.ValidationError("You must upload a new image if you want to clear the previous one.")    
 
 class ProjectForm(forms.ModelForm):
     class Meta:
