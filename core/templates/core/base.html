@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Ubiglu Afro{% endblock %}</title>
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{% static 'core/images/favicon.svg' %}">
-    
+
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{% static 'core/css/style.css' %}" rel="stylesheet">
     <script src="https://js.stripe.com/v3/"></script>
-    
+
     <script>
         function getCookie(name) {
             let cookieValue = null;
@@ -30,23 +30,23 @@
             }
             return cookieValue;
         }
-    
+
         document.addEventListener('DOMContentLoaded', () => {
             const button = document.getElementById('purchase-button');
             if (!button) {
                 console.error("Purchase button not found!");
                 return;
             }
-    
+
             button.addEventListener('click', async () => {
                 console.log("Purchase button clicked!");
-    
+
                 const projectId = button.dataset.projectId;
                 if (!projectId) {
                     console.error("Project ID not found!");
                     return;
                 }
-    
+
                 try {
                     const response = await fetch(`/create-payment/${projectId}/`, {
                         method: 'POST',
@@ -55,17 +55,17 @@
                             'X-CSRFToken': getCookie('csrftoken'),
                         },
                     });
-    
+
                     const data = await response.json();
                     console.log("Response:", data);
-    
+
                     if (data.error) {
                         console.error(data.error);
                         alert('An error occurred: ' + data.error);
                     } else {
                         const stripe = Stripe('pk_test_51QZBW7BTXdIYsGiZpOWuJyhReFGsmaT8kQMQhOjWxsIszPmE8vFOK0yVF5Kzo34tutm05lKQKoNuweHCYTHs70HG00HKKYK1pj');
                         const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-    
+
                         if (result.error) {
                             console.error(result.error.message);
                             alert('An error occurred: ' + result.error.message);
@@ -81,12 +81,13 @@
 {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const toggler = document.querySelector(".navbar-toggler");
                 const collapse = document.querySelector(".collapse");
-        
+
                 toggler.addEventListener("click", function () {
                     collapse.classList.toggle("expanded");
                 });
@@ -101,47 +102,29 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:project_list' %}">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:contact' %}">Contact</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:project_list' %}">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:contact' %}">Contact</a></li>
                     {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {% if user.userprofile.profile_image %}
-                                    <img src="{{ user.userprofile.profile_image.url }}" 
-                                         alt="Profile Image" 
-                                         style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px;">
-                                {% else %}
-                                <img src="{% static 'core/images/default.jpg' %}" 
-                                         alt="Profile Image" 
-                                         style="width: 25px; height: 25px; border-radius: 50%; margin-right: 5px;">
-                                {% endif %}
-                                {{ user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'core:profile' %}">Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'core:logout' %}">Logout</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.userprofile.profile_image %}
+                                <img src="{{ user.userprofile.profile_image.url }}" class="rounded-circle" alt="Profile Image" style="width: 30px;">
+                            {% else %}
+                                <img src="{% static 'core/images/default.jpg' %}" class="rounded-circle" alt="Profile Image" style="width: 30px;">
+                            {% endif %}
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'core:profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'core:login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'core:register' %}">Register</a>
-                        </li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:register' %}">Register</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -150,22 +133,11 @@
 
     <!-- Main Content -->
     <main>
-        {% if messages %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-4">
+    <footer class="footer py-4 bg-dark text-white mt-5">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
@@ -174,21 +146,19 @@
                 </div>
                 <div class="col-lg-4">
                     <h5>Quick Links</h5>
-                    <ul>
-                        <li><a href="{% url 'core:home' %}">Home</a></li>
-                        <li><a href="{% url 'core:project_list' %}">Projects</a></li>
-                        <li><a href="{% url 'core:about' %}">About Us</a></li>
-                        <li><a href="{% url 'core:contact' %}">Contact</a></li>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}" class="text-white">Home</a></li>
+                        <li><a href="{% url 'core:project_list' %}" class="text-white">Projects</a></li>
+                        <li><a href="{% url 'core:about' %}" class="text-white">About Us</a></li>
+                        <li><a href="{% url 'core:contact' %}" class="text-white">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
                     <h5>Connect With Us</h5>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
+                    <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
             <hr>
@@ -200,7 +170,21 @@
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'core/js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
+    <script>
+        // Additional JavaScript for interactive elements
+        document.addEventListener("DOMContentLoaded", function () {
+            // Example: Smooth scroll for anchor links
+            const links = document.querySelectorAll('a[href^="#"]');
+            for (const link of links) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

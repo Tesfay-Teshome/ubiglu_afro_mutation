@@ -36,15 +36,10 @@ body {
 .navbar-brand {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #3498db !important;
+    color: var(--primary-color) !important;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.navbar-brand img {
-    height: 40px;
-    filter: brightness(0) invert(1); /* Make logo white */
 }
 
 .navbar .nav-link {
@@ -89,19 +84,6 @@ body {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* Message Alert Styles */
-.alert {
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.alert-success {
-    background-color: rgba(46, 204, 113, 0.1);
-    color: var(--success-color);
-}
-
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -122,28 +104,108 @@ body {
     opacity: 0.9;
 }
 
-/* Cards */
-.card {
+.hero .btn {
+    margin: 10px;
+    font-size: 16px;
+}
+
+/* Features Section */
+.features {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.features .card {
     border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
     transition: all 0.3s ease;
 }
 
-.card:hover {
+.features .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-.card-img-top {
-    border-radius: 12px 12px 0 0;
+.features .card i {
+    color: #d32f2f;
+}
+
+/* Gallery Section */
+.gallery {
+    padding: 60px 0;
+}
+
+.gallery img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+/* Testimonials Section */
+.testimonials {
+    padding: 60px 0;
+    background-color: #fafafa;
+}
+
+.testimonials .card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.testimonials blockquote {
+    font-style: italic;
+}
+
+/* Blog Section */
+.blog {
+    padding: 60px 0;
+    background-color: #fafafa;
+}
+
+.blog .card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.blog .card-img-top {
     height: 200px;
     object-fit: cover;
 }
 
-.card-title {
-    color: var(--primary-color);
+/* Footer Styles */
+.footer {
+    background-color: var(--dark-color);
+    color: white;
+    padding: 30px 0;
+    margin-top: 3rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer h5 {
     font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer a {
+    color: var(--white);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--primary-color);
 }
 
 /* Buttons */
@@ -204,18 +266,6 @@ body {
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
-/* Link Styles */
-a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-a:hover {
-    color: #2980b9;
-    text-decoration: none;
-}
-
 /* Project Grid */
 .project-grid {
     display: grid;
@@ -236,37 +286,17 @@ a:hover {
     object-fit: cover;
 }
 
-/* Footer */
-.footer {
-    background-color: #f8f9fa;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 3rem 0;
-    margin-top: 3rem;
-}
-
-.footer h5 {
-    font-weight: 600;
+/* Message Alert Styles */
+.alert {
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 1rem 1.5rem;
     margin-bottom: 1.5rem;
 }
 
-.footer ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.footer ul li {
-    margin-bottom: 0.5rem;
-}
-
-.footer a {
-    color: var(--dark-color);
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.footer a:hover {
-    color: var(--primary-color);
+.alert-success {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: var(--success-color);
 }
 
 /* Animations */
@@ -423,7 +453,7 @@ a:hover {
 
 .auth-page .btn {
     height: 48px;
-    border-radius: var(--border-radius);
+    border-radius: var (--border-radius);
     font-weight: 600;
     text-transform: none;
     letter-spacing: 0.5px;
@@ -544,3 +574,4 @@ a:hover {
 main {
     margin-top: 76px;
 }
+

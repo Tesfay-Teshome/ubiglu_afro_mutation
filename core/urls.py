@@ -4,6 +4,8 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import reverse_lazy
+
 
 app_name = 'core'
 
@@ -30,14 +32,16 @@ urlpatterns = [
     path('account/delete/', views.delete_account, name='account_delete'),
     
     # Password Reset URLs
-    path('password-reset/', 
-        auth_views.PasswordResetView.as_view(
-            template_name='core/auth/password_reset_form.html',
-            email_template_name='core/auth/password_reset_email.html',
-            subject_template_name='core/auth/password_reset_subject.txt'
-        ),
-        name='password_reset'
+    path(
+    'password-reset/',
+    auth_views.PasswordResetView.as_view(
+        template_name='core/auth/password_reset_form.html',
+        email_template_name='core/auth/password_reset_email.html',
+        subject_template_name='core/auth/password_reset_subject.txt',
+        success_url=reverse_lazy('core:password_reset_done')  # Add this line
     ),
+    name='password_reset',
+),
     path('password-reset/done/',
         auth_views.PasswordResetDoneView.as_view(
             template_name='core/auth/password_reset_done.html'
@@ -86,6 +90,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 
 # Error handlers
 handler404 = views.handler404
