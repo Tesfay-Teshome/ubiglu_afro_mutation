@@ -1,9 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from .models import PasswordResetRequest
 from .models import (
     UserProfile, Category, Project, Payment, 
-    Fabric, DigitalAsset, ColorPalette, OrderTracking
+    Fabric, DigitalAsset, ColorPalette, OrderTracking, Garment3D,
 )
 
 class UserProfileInline(admin.StackedInline):
@@ -24,6 +25,11 @@ class CustomUserAdmin(UserAdmin):
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 
+@admin.register(PasswordResetRequest)
+class PasswordResetRequestAdmin(admin.ModelAdmin):
+    list_display = ('email', 'created_at')
+    search_fields = ('email', 'user__username')
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     """Admin interface for Category model."""
@@ -39,11 +45,21 @@ admin.site.register(Project, ProjectAdmin)
 @admin.register(DigitalAsset)
 class DigitalAssetAdmin(admin.ModelAdmin):
     """Admin interface for DigitalAsset model."""
-    list_display = ('title', 'user', 'category', 'file_type', 'created_at')
-    list_filter = ('category', 'created_at', 'file_type')
+    list_display = ('title', 'user', 'category', 'file_type', 'file_format', 'created_at')
+    list_filter = ('category', 'created_at', 'file_type', 'file_format')
     search_fields = ('title', 'description', 'user__username')
     date_hierarchy = 'created_at'
     readonly_fields = ('created_at', 'updated_at', 'file_type')
+    
+@admin.register(Garment3D)
+class Garment3DAdmin(admin.ModelAdmin):
+    """Admin interface for Garment3D model."""
+    list_display = ('title', 'user', 'category', 'created_at')
+    list_filter = ('category', 'created_at')
+    search_fields = ('title', 'description', 'user__username')
+    date_hierarchy = 'created_at'
+    readonly_fields = ('created_at', 'updated_at')
+
 
 @admin.register(Fabric)
 class FabricAdmin(admin.ModelAdmin):

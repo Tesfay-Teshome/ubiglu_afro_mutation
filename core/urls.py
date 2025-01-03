@@ -2,9 +2,11 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import PasswordResetView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import reverse_lazy
+
 
 
 app_name = 'core'
@@ -30,6 +32,7 @@ urlpatterns = [
     # Profile Views
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('account/delete/', views.delete_account, name='account_delete'),
+    
     
     # Password Reset URLs
     path(

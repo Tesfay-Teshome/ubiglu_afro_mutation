@@ -18,12 +18,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework import routers
+from core.views import FabricViewSet
+
+router = routers.DefaultRouter()
+router.register(r'fabrics', FabricViewSet)
 
 # Base URL patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('accounts/', include('allauth.urls')),
+    path('api/', include(router.urls)),
    # path('auth/', include('django.contrib.auth.urls'), name='auth'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

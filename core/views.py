@@ -10,6 +10,11 @@ from django.views.decorators.http import require_POST
 from rest_framework import viewsets, serializers
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.contrib.auth.views import PasswordResetView
+from .models import PasswordResetRequest
+from django.core.mail import send_mail
+from .models import Garment3D
+from django.utils.translation import gettext_lazy as _
 from .models import Project, UserProfile, DigitalAsset, Payment, Category, Fabric, Design, Profile
 from .forms import ProjectForm, UserProfileForm, CustomUserCreationForm, PaymentForm, ContactForm, DigitalAssetForm, ColorPaletteForm, UserSettingsForm
 import stripe
@@ -173,6 +178,14 @@ def login_view(request):
     
     return render(request, 'core/auth/login.html', {'form': form})
 
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        user_email = form.cleaned_data['email']
+        user = User.objects.get(email=user_email)
+        PasswordResetRequest.objects.create(user=user, email=user_email)
+        return response
+
 def logout_view(request):
     """Logout view."""
     logout(request)
@@ -215,6 +228,7 @@ def project_list(request):
     return render(request, 'core/projects.html', {'projects': projects})
 
 @login_required
+# views.py
 def project_create(request):
     """Create a new project."""
     if request.method == 'POST':
@@ -222,35 +236,26 @@ def project_create(request):
         if form.is_valid():
             project = form.save(commit=False)
             project.owner = request.user
-            
-            # Debugging output to check form data
-            print(f"Form data: {request.POST}")
-            
-            # Log the submitted category value
-            selected_category = request.POST.get('category')
-            print(f"Submitted category: {selected_category}")
-            
+
             # Save design data and measurements
             design_data = request.POST.get('design_data')
             measurements = request.POST.get('measurements')
-            
+
             if design_data:
                 try:
-                    project.design_data = json.loads(design_data)
+                  project.design_data = json.loads(design_data)
                 except json.JSONDecodeError:
-                    messages.warning(request, 'Invalid design data format')
-            
+                  messages.warning(request, 'Invalid design data format')
+
             if measurements:
-                try:
-                    project.measurements = json.loads(measurements)
-                except json.JSONDecodeError:
-                    messages.warning(request, 'Invalid measurements format')
-            
-            project.status = 'published'  # Set project status to published
-            
+               try:
+                 project.measurements = json.loads(measurements)
+               except json.JSONDecodeError:
+                 messages.warning(request, 'Invalid measurements format')
+
+            project.status = 'published' # Set project status to published
             project.save()
-            print(f"Project saved: {project.title}")  # Debugging statement
-            
+
             # Save fabric design if provided
             if 'fabric_design' in request.FILES:
                 fabric = Fabric.objects.create(
@@ -259,23 +264,24 @@ def project_create(request):
                     image=request.FILES['fabric_design'],
                     project=project
                 )
-            
+
             messages.success(request, 'Project created successfully!')
             return redirect('core:project_detail', project_id=project.id)
         else:
-            print(f"Form errors: {form.errors}")  # Debugging statement
+            messages.error(request, 'Please correct the errors below.')
+
     else:
         form = ProjectForm()
-    
+
     # Get available fabrics for the designer
     fabrics = Fabric.objects.all()
-    categories = Category.objects.all()  # Retrieve categories
-    # print(f"Categories: {[cat.name for cat in categories]}")  
+    categories = Category.objects.all() # Retrieve categories
+
     return render(request, 'core/create_project.html', {
         'form': form,
         'title': 'Create Project',
         'fabrics': fabrics,
-        'categories': categories  # Pass categories to the template
+        'categories': categories # Pass categories to the template
     })
 
 def project_detail(request, project_id):
@@ -285,6 +291,15 @@ def project_detail(request, project_id):
     print(form.errors)  # This will show any validation errors
     return render(request, 'core/project_detail.html', {'form': form, 'project': project})
 
+class FabricSerializer(serializers.ModelSerializer):
+    class Meta:
+      model = Fabric
+      fields = '__all__'
+
+class FabricViewSet(viewsets.ModelViewSet):
+    """ViewSet for fabrics API."""
+    queryset = Fabric.objects.all()
+    serializer_class = FabricSerializer
 
 @login_required
 def edit_project(request, project_id):

@@ -73,6 +73,14 @@ class UserProfile(models.Model):
 
     def get_phone_number(self):
         return cipher.decrypt(self.phone_number.encode()).decode() if self.phone_number else None
+    
+class PasswordResetRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Password reset request for {self.email} at {self.created_at}"
 
 # Profile
 class Profile(models.Model):
@@ -164,6 +172,12 @@ class DigitalAsset(models.Model):
     tags = models.CharField(max_length=200, blank=True, help_text="Comma-separated list of tags")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    file_format = models.CharField(max_length=10, choices=[
+        ('OBJ', 'OBJ'),
+        ('FBX', 'FBX'),
+        ('GLB', 'GLB'),
+        ('GLTF', 'GLTF'),
+    ], blank=True, null=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -180,6 +194,20 @@ class DigitalAsset(models.Model):
     @property
     def tags_list(self):
         return [tag.strip() for tag in self.tags.split(',') if tag.strip()]
+    
+# 3D Garment
+class Garment3D(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    digital_asset = models.ForeignKey(DigitalAsset, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.title
+
 
 # Fabric
 class Fabric(models.Model):
