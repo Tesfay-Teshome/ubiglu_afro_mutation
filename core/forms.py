@@ -125,7 +125,7 @@ class FabricForm(forms.ModelForm):
     """Form for creating and editing fabric entries."""
     class Meta:
         model = Fabric
-        fields = ['name', 'description', 'image', 'category', 'price']
+        fields = ['name', 'description','image', 'category', 'price']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
             'price': forms.NumberInput(attrs={'step': '0.01'})

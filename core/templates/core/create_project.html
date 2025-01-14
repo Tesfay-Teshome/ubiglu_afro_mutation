@@ -7,260 +7,255 @@
 {% block content %}
 {% block extra_head %}
 <style>
-  body {
-      background-color: #f0f2f5;
-      font-family: 'Roboto', sans-serif;
-      color: #343a40;
-      padding-top: 10px;
-      margin: 9px;
-  }
+    body {
+        background-color: #f0f2f5;
+        font-family: 'Roboto', sans-serif;
+        color: #343a40;
+        padding-top: 0;
+        margin: 0;
+    }
 
-  .container {
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 0;
-  }
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+    }
 
-  .card {
-      background: transparent;
-      box-shadow: none;
-      margin-bottom: 10px;
-  }
-  
-  .card-header {
-      padding: 15px;
-      background: #343a40;
-      color: white;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-  }
-  
-  h4, h5 {
-      margin-bottom: 1.2rem;
-      color: white;
-      font-weight: 500;
-  }
-  
-  .form-label {
-      display: block;
-      font-weight: 500;
-      color: #495057;
-      margin-bottom: 5px;
-  }
-  
-  .row {
-      margin-bottom: 20px;
-  }
-  
-  .custom-file-upload {
-      border: 2px dashed #ccc;
-      border-radius: 8px;
-      padding: 15px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.3s ease;
-  }
-  
-  .custom-file-upload:hover {
+    .card {
+        background: transparent;
+        box-shadow: none;
+        margin-bottom: 0;
+    }
+    
+    .card-header {
+        padding: 15px;
+        background: #343a40;
+        color: white;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    h4, h5 {
+        margin-bottom: 1.2rem;
+        color: white;
+        font-weight: 500;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 5px;
+    }
+    
+    .row {
+        margin-bottom: 20px;
+    }
+    
+    .custom-file-upload {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 15px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+   .custom-file-upload:hover {
       background: #f0f0f0;
-      border-color: #999;
-  }
-  
-  .form-control {
-      display: block;
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      margin-bottom: 10px;
-  }
-  
-  .form-control:focus {
-      border-color: #007bff;
-      outline: none;
-      box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
-  }
-  
-  .btn-primary {
-      padding: 10px 18px;
-      border-radius: 8px;
-      background-color: #007bff;
-      border: none;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      font-weight: 500;
-      margin-top: 10px;
-      pointer-events: auto; /* Ensures buttons are clickable */
-  }
-
-  .btn-primary:hover {
+        border-color: #999;
+    }
+    
+    .form-control {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 10px;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        outline: none;
+       box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+   }
+    
+     .btn-primary {
+        padding: 10px 18px;
+        border-radius: 8px;
+       background-color: #007bff;
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-weight: 500;
+        margin-top: 10px;
+         pointer-events: auto;
+    }
+   
+   .btn-primary:hover {
       background-color: #0056b3;
-  }
+    }
 
-  .btn-primary:disabled {
-      background-color: #ccc;
-      color: #666;
-      cursor: not-allowed;
-      pointer-events: none;
-  }
-
-  .text-danger {
-      color: #dc3545;
-  }
-
-  /* 3D Editor Layout */
-  .editor-container {
-      display: flex;
-      flex-direction: row;
-      height: calc(100vh - 60px);
-      overflow: hidden;
-  }
-
-  .left-panel {
-      flex: 1;
-      padding: 15px;
-      background: #f0f2f5;
-      border-right: 1px solid #ddd;
-      overflow-y: auto;
-  }
-
-  .main-panel {
+   .btn-primary:disabled {
+       background-color: #ccc;
+       color: #666;
+       cursor: not-allowed;
+        pointer-events: none;
+   }
+    
+   .text-danger {
+       color: #dc3545;
+    }
+    
+    /* 3D Editor Layout */
+   .editor-container {
+       display: flex;
+       flex-direction: row;
+       height: calc(100vh - 60px);
+        overflow: hidden;
+    }
+    .left-panel {
+       flex: 1;
+       padding: 15px;
+        background: #f0f2f5;
+       border-right: 1px solid #ddd;
+        overflow-y: auto;
+    }
+    .main-panel {
       flex: 3;
-      position: relative;
-  }
-
-  .right-panel {
-      flex: 1;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      background: #f0f2f5;
-      border-left: 1px solid #ddd;
-      overflow-y: auto;
-  }
-  
-  .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px;
+       position: relative;
+    }
+  .tools-container {
+        flex: 1;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+       background: #f0f2f5;
+        border-left: 1px solid #ddd;
+        overflow-y: auto;
+   }
+    .toolbar {
+        display: flex;
+       justify-content: space-between;
+        align-items: center;
+       padding: 8px;
       background: #343a40;
+    }
+    
+    .tool-group {
+       margin-bottom: 12px;
+       border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
   }
   
-  .tool-group {
-      margin-bottom: 12px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+    .tool-group:last-child {
+       border-bottom: none;
   }
-
-  .tool-group:last-child {
-      border-bottom: none;
-  }
-  
-  .texture-list {
+   .texture-list {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-  }
-  
-  .texture-item {
-      cursor: pointer;
-      border-radius: 6px;
+       flex-wrap: wrap;
+       gap: 10px;
+    }
+    
+    .texture-item {
+        cursor: pointer;
+       border-radius: 8px;
       overflow: hidden;
-      transition: all 0.3s ease;
-  }
-
-  .texture-item:hover {
-      transform: scale(1.05);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .texture-item img {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-  }
-  
-  .slider-container {
-      display: flex;
+       transition: all 0.3s ease;
+    }
+    .texture-item:hover {
+        transform: scale(1.05);
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .texture-item img {
+       width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+    .slider-container {
+        display: flex;
       align-items: center;
-      margin-bottom: 8px;
-  }
-  
-  .slider-label {
-      margin-right: 8px;
-      min-width: 60px;
-      text-align: right;
-  }
+       margin-bottom: 10px;
+   }
 
-  .custom-range {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 4px;
-      background: #eee;
-      border-radius: 4px;
+   .slider-label {
+       margin-right: 10px;
+       min-width: 80px;
+       text-align: right;
+   }
+
+    .custom-range {
+       -webkit-appearance: none;
+       appearance: none;
+       width: 100%;
+        height: 5px;
+        background: #d3d3d3;
+        border-radius: 5px;
       outline: none;
-  }
-
-  .custom-range::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 12px;
-      height: 12px;
+    }
+    
+    .custom-range::-webkit-slider-thumb {
+       -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
       background: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-  }
-
+       cursor: pointer;
+       border-radius: 50%;
+   }
+    
   .custom-range::-moz-range-thumb {
-      width: 12px;
-      height: 12px;
-      background: #007bff;
-      border-radius: 50%;
-      cursor: pointer;
-  }
-
-  .hidden {
-      display: none;
-  }
-
-  /* Loader Overlay */
-  .loading-overlay {
-      position: absolute;
-      top: 75px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(255, 255, 255, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-  }
-  
-  .loading-message {
-      font-size: 18px;
+        width: 15px;
+        height: 15px;
+       background: #007bff;
+       cursor: pointer;
+        border-radius: 50%;
+    }
+   
+     .hidden {
+        display: none;
+    }
+     /* Loader Overlay */
+     .loading-overlay {
+        position: absolute;
+        top: 75;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+    }
+    
+     .loading-message {
+        font-size: 18px;
       font-weight: 500;
-      color: #007bff;
-  }
+        color: #007bff;
+   }
   
-  /* Responsive Adjustments */
-  @media (max-width: 768px) {
+      /* Responsive Adjustments */
+    @media (max-width: 768px) {
       .editor-container {
           flex-direction: column;
-          height: auto;
-          overflow: visible;
-      }
-
+            height: auto;
+           overflow: visible;
+       }
       .left-panel, .right-panel {
-          border-right: none;
-          border-left: none;
-      }
-  }
+            border-right: none;
+           border-left: none;
+       }
+     
+       .canvas-container {
+          min-width: 100%;
+           margin-bottom: 20px;
+       }
+   }
 </style>
 {% endblock extra_head %}
 
@@ -271,133 +266,155 @@
         </div>
         <div class="card-body">
              <form method="post" enctype="multipart/form-data" id="projectForm">
-                {% csrf_token %}
+               {% csrf_token %}
                 <div class="editor-container">
                      <!-- Left panel -->
-                     <div class="left-panel">
-                          <h5 class="mb-3">Project Details</h5>
-                           <!-- Basic Information -->
-                           <div class="row g-3 mb-4">
-                               <div class="col-12">
+                   <div class="left-panel">
+                      <h5 class="mb-3">Project Details</h5>
+                            <!-- Basic Information -->
+                          <div class="row g-3 mb-4">
+                              <div class="col-12">
                                    {{ form.title|as_crispy_field }}
                                 </div>
-                                <div class="col-12">
-                                  {{ form.category|as_crispy_field }}
+                             <div class="col-12">
+                                   {{ form.category|as_crispy_field }}
+                              </div>
+                              <div class="col-12">
+                                    {{ form.price|as_crispy_field }}
                                 </div>
-                                <div class="col-12">
-                                     {{ form.price|as_crispy_field }}
-                                </div>
-                                <div class="col-12">
-                                  {{ form.status|as_crispy_field }}
+                              <div class="col-12">
+                                   {{ form.status|as_crispy_field }}
                                </div>
-                               <div class="col-12">
-                                  {{ form.description|as_crispy_field }}
-                                </div>
-                           </div>
-                      </div>
-                     <!-- Main Panel (3D View) -->
-                      <div class="main-panel">
-                           <div class="toolbar">
-                            <div>
-                              <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Create Project
-                              </button>
-                            </div>
-                              <div>
-                                  <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
-                                 </a>
-                           </div>
+                              <div class="col-12">
+                                     {{ form.description|as_crispy_field }}
+                                  </div>
                          </div>
-                         <div class="canvas-container">
-                             <div id="loadingOverlay" class="loading-overlay hidden">
-                                 <div class="loading-message">Loading model...</div>
-                             </div>
-                            <canvas id="garmentCanvas" class="border" style="width: 100%; height: 100%;"></canvas>
-                      </div>
                     </div>
-                  <!-- Right Panel (Tools) -->
-                    <div class="right-panel">
-                          <div class="tool-group">
-                             <h6>Upload 3D Model</h6>
-                               <input type="file" id="modelUpload" accept=".obj,.fbx,.glb,.gltf" class="form-control mb-3">
-                          </div>
-                          <div class="tool-group">
-                              <h6>Fabric Options</h6>
-                                 <select class="form-select mb-3" id="fabricSelect">
-                                     <!-- Fabric Options will be loaded by JS -->
-                                </select>
-                          </div>
-                           <div class="tool-group">
-                              <h6>Color Picker</h6>
-                               <input type="color" class="form-control form-control-color mb-3" id="colorPicker" value="#563d7c">
-                           </div>
-                         <div class="tool-group">
-                            <h6>Patterns</h6>
-                               <div class="texture-list" id="patternPreviews">
-                                   <!-- Patterns will be loaded by JS -->
+                     <!-- Main Panel (3D View) -->
+                     <div class="main-panel">
+                          <div class="toolbar">
+                              <div>
+                                  <button type="submit" id="save-project" class="btn btn-primary">
+                                      <i class="fas fa-save"></i> Create Project
+                                   </button>
+                             </div>
+                              <div>
+                                   <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                                       <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                     </a>
                                </div>
                         </div>
-                        <div class="tool-group">
-                            <h6>Model Adjustments</h6>
-                               <div class="slider-container">
-                                    <label class="slider-label">Rotation X:</label>
-                                     <input type="range" class="custom-range" id="rotateXSlider" min="-180" max="180" value="0">
-                                   </div>
-                                 <div class="slider-container">
-                                     <label class="slider-label">Rotation Y:</label>
-                                      <input type="range" class="custom-range" id="rotateYSlider" min="-180" max="180" value="0">
-                                   </div>
-                                 <div class="slider-container">
-                                      <label class="slider-label">Rotation Z:</label>
-                                        <input type="range" class="custom-range" id="rotateZSlider" min="-180" max="180" value="0">
-                                  </div>
-                                   <div class="slider-container">
-                                       <label class="slider-label">Scale:</label>
-                                        <input type="range" class="custom-range" id="scaleSlider" min="0.1" max="2" step="0.1" value="1">
-                                    </div>
-                                  <div class="slider-container">
-                                     <label class="slider-label">Position X:</label>
-                                     <input type="range" class="custom-range" id="positionXSlider" min="-5" max="5" step="0.1" value="0">
-                                    </div>
-                                  <div class="slider-container">
-                                      <label class="slider-label">Position Y:</label>
-                                      <input type="range" class="custom-range" id="positionYSlider" min="-5" max="5" step="0.1" value="0">
-                                   </div>
-                                    <div class="slider-container">
-                                        <label class="slider-label">Position Z:</label>
-                                         <input type="range" class="custom-range" id="positionZSlider" min="-5" max="5" step="0.1" value="0">
-                                   </div>
-                          </div>
-                           <div class="tool-group">
-                               <h6>Measurements</h6>
-                                 <div class="row g-2">
-                                      <div class="col-6">
-                                         <label>Chest (cm)</label>
-                                          <input type="number" class="form-control" name="chest" min="0" step="0.1">
-                                      </div>
-                                      <div class="col-6">
-                                         <label>Waist (cm)</label>
-                                          <input type="number" class="form-control" name="waist" min="0" step="0.1">
-                                    </div>
-                                      <div class="col-6">
-                                         <label>Hip (cm)</label>
-                                          <input type="number" class="form-control" name="hip" min="0" step="0.1">
-                                      </div>
-                                      <div class="col-6">
-                                         <label>Length (cm)</label>
-                                          <input type="number" class="form-control" name="length" min="0" step="0.1">
-                                       </div>
-                                  </div>
-                          </div>
+                        <div class="canvas-container">
+                            <div id="loadingOverlay" class="loading-overlay hidden">
+                                  <div class="loading-message"></div>
+                              </div>
+                           <canvas id="garmentCanvas" class="border" style="width: 100%; height: 500px;"></canvas>
+                         </div>
                      </div>
-                    <!-- Hidden inputs to store data -->
-                   <input type="hidden" name="design_data" id="designDataInput">
-                     <input type="hidden" name="measurements" id="measurementsInput">
+                   <!-- Right Panel (Tools) -->
+                   <div class="tools-container">
+                        <div class="tool-group">
+                            <h6>Upload 3D Model</h6>
+                             <input type="file" id="modelUpload" accept=".obj,.fbx,.glb,.gltf" class="form-control mb-3">
+                         </div>
+                        <div class="tool-group">
+                             <h6>Fabric Options</h6>
+                             <select class="form-select mb-3" id="fabricSelect">
+                                   <!-- Fabric Options will be loaded by JS -->
+                                </select>
+                         </div>
+                        <div class="tool-group">
+                           <h6>Color Picker</h6>
+                             <input type="color" class="form-control form-control-color mb-3" id="colorPicker" value="#563d7c">
+                         </div>
+                        <div class="tool-group">
+                             <h6>Patterns</h6>
+                                <div class="texture-list" id="patternPreviews">
+                                     <!-- Patterns will be loaded by JS -->
+                                  </div>
+                         </div>
+                       <div class="tool-group">
+                           <h6>Model Adjustments</h6>
+                            <div class="slider-container">
+                                <label class="slider-label">Rotation X:</label>
+                                 <input type="range" class="custom-range" id="rotateXSlider" min="-180" max="180" value="0">
+                            </div>
+                             <div class="slider-container">
+                                 <label class="slider-label">Rotation Y:</label>
+                                  <input type="range" class="custom-range" id="rotateYSlider" min="-180" max="180" value="0">
+                               </div>
+                            <div class="slider-container">
+                               <label class="slider-label">Rotation Z:</label>
+                                 <input type="range" class="custom-range" id="rotateZSlider" min="-180" max="180" value="0">
+                             </div>
+                             <div class="slider-container">
+                                  <label class="slider-label">Scale:</label>
+                                  <input type="range" class="custom-range" id="scaleSlider" min="0.1" max="2" step="0.1" value="1">
+                             </div>
+                             <div class="slider-container">
+                                 <label class="slider-label">Position X:</label>
+                                   <input type="range" class="custom-range" id="positionXSlider" min="-5" max="5" step="0.1" value="0">
+                            </div>
+                            <div class="slider-container">
+                                <label class="slider-label">Position Y:</label>
+                                  <input type="range" class="custom-range" id="positionYSlider" min="-5" max="5" step="0.1" value="0">
+                               </div>
+                                <div class="slider-container">
+                                  <label class="slider-label">Position Z:</label>
+                                   <input type="range" class="custom-range" id="positionZSlider" min="-5" max="5" step="0.1" value="0">
+                               </div>
+                         </div>
+                         <div class="tool-group">
+                             <h6>Measurements</h6>
+                             <div class="row g-2">
+                                 <div class="col-6">
+                                     <label>Chest (cm)</label>
+                                      <input type="number" class="form-control" name="chest" min="0" step="0.1">
+                                   </div>
+                                   <div class="col-6">
+                                       <label>Waist (cm)</label>
+                                        <input type="number" class="form-control" name="waist" min="0" step="0.1">
+                                  </div>
+                                    <div class="col-6">
+                                       <label>Hip (cm)</label>
+                                        <input type="number" class="form-control" name="hip" min="0" step="0.1">
+                                  </div>
+                                  <div class="col-6">
+                                      <label>Length (cm)</label>
+                                        <input type="number" class="form-control" name="length" min="0" step="0.1">
+                                   </div>
+                              </div>
+                      </div>
+                    <div class="tool-group">
+                        <h6>Material</h6>
+                          <div class="slider-container">
+                             <label class="slider-label">Metallic</label>
+                               <input type="range" class="custom-range" id="metallicSlider" min="0" max="1" step="0.1" value="0">
+                          </div>
+                           <div class="slider-container">
+                             <label class="slider-label">Roughness:</label>
+                               <input type="range" class="custom-range" id="roughnessSlider" min="0" max="1" step="0.1" value="0.5">
+                           </div>
+                        </div>
+                         <div class="tool-group">
+                          <h6>Texture Mapping</h6>
+                               <div class="slider-container">
+                                  <label class="slider-label">Repeat U:</label>
+                                   <input type="range" class="custom-range" id="repeatUSlider" min="0" max="5" step="0.1" value="1">
+                                </div>
+                               <div class="slider-container">
+                                   <label class="slider-label">Repeat V:</label>
+                                    <input type="range" class="custom-range" id="repeatVSlider" min="0" max="5" step="0.1" value="1">
+                                </div>
+                        </div>
+                   </div>
+                     <!-- Hidden inputs to store data -->
+                     <input type="hidden" name="design_data" id="designDataInput">
+                    <input type="hidden" name="measurements" id="measurementsInput">
                  </div>
-           </form>
-       </div>
-   </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -406,7 +423,7 @@
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 <script>
- document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
         // --- Get HTML Elements ---
         const canvas = document.getElementById('garmentCanvas');
@@ -416,77 +433,91 @@
         const modelUpload = document.getElementById('modelUpload');
         const designDataInput = document.getElementById('designDataInput');
         const measurementsInput = document.getElementById('measurementsInput');
-        const saveProjectButton = document.getElementById('save-project');
+       const saveProjectButton = document.getElementById('save-project');
         const projectForm = document.getElementById('projectForm');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-       
-       // --- Get Model Adjustment Sliders ---
+       const loadingOverlay = document.getElementById('loadingOverlay');
+   
+        // --- Get Model Adjustment Sliders ---
         const rotateXSlider = document.getElementById('rotateXSlider');
         const rotateYSlider = document.getElementById('rotateYSlider');
         const rotateZSlider = document.getElementById('rotateZSlider');
         const scaleSlider = document.getElementById('scaleSlider');
-        const positionXSlider = document.getElementById('positionXSlider');
-        const positionYSlider = document.getElementById('positionYSlider');
+       const positionXSlider = document.getElementById('positionXSlider');
+       const positionYSlider = document.getElementById('positionYSlider');
         const positionZSlider = document.getElementById('positionZSlider');
+  
+      // --- Get Material Sliders ---
+        const metallicSlider = document.getElementById('metallicSlider');
+       const roughnessSlider = document.getElementById('roughnessSlider');
+    
+     // --- Get Texture Mapping Sliders ---
+       const repeatUSlider = document.getElementById('repeatUSlider');
+        const repeatVSlider = document.getElementById('repeatVSlider');
 
         // --- Initialize Babylon.js Scene ---
-        const engine = new BABYLON.Engine(canvas, true);
-        const scene = new BABYLON.Scene(engine);
+      const engine = new BABYLON.Engine(canvas, true);
+       const scene = new BABYLON.Scene(engine);
 
         // --- Camera and Light ---
-        const camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
+      const camera = new BABYLON.ArcRotateCamera("camera1", Math.PI / 2, Math.PI / 2, 10, BABYLON.Vector3.Zero(), scene);
         camera.attachControl(canvas, true);
         const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
-
-        // --- Default Material ---
-        const defaultMaterial = new BABYLON.StandardMaterial("defaultMaterial", scene);
-        defaultMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
-        defaultMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-
+  
+      // --- Default Material ---
+      const defaultMaterial = new BABYLON.StandardMaterial("defaultMaterial", scene);
+       defaultMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+       defaultMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+   
         let garment;
-
+    
         // --- Model Loading Function ---
         modelUpload.addEventListener('change', async (e) => {
-             console.log("modelUpload event triggered");
-             const file = e.target.files[0];
-             if (file) {
-               loadingOverlay.classList.remove('hidden');
-                 const reader = new FileReader();
-                 reader.onload = (event) => {
-                     const fileUrl = event.target.result;
-                     loadModel(fileUrl);
-                  };
-                 reader.readAsDataURL(file);
-             }
-         });
-
-        async function loadModel(fileUrl) {
-            console.log('Loading model from:', fileUrl);
+           console.log("modelUpload event triggered");
+           const file = e.target.files[0];
+           if (file) {
+              loadingOverlay.classList.remove('hidden');
+               const reader = new FileReader();
+                reader.onload = (event) => {
+                   const fileUrl = event.target.result;
+                   loadModel(fileUrl);
+                };
+              reader.readAsDataURL(file);
+            }
+       });
+       
+      async function loadModel(fileUrl) {
+           console.log('Loading model from:', fileUrl);
             if (garment) {
                 garment.dispose();
-            }
-           try {
-                 BABYLON.SceneLoader.ImportMesh("", "", fileUrl, scene, (meshes) => {
+           }
+            try {
+               BABYLON.SceneLoader.ImportMesh("", "", fileUrl, scene, (meshes) => {
                      console.log("Meshes Loaded:", meshes);
                      garment = meshes[0];
                      if (garment) {
-                       garment.material = defaultMaterial;
-                       camera.setTarget(garment.getBoundingInfo().boundingBox.centerWorld);
-                    } else {
-                      console.error('Error loading 3D model: Mesh is undefined');
-                   }
+                         garment.material = defaultMaterial;
+                        camera.setTarget(garment.getBoundingInfo().boundingBox.centerWorld);
+                   } else {
+                       console.error('Error loading 3D model: Mesh is undefined');
+                    }
                   loadingOverlay.classList.add('hidden');
-               }, null, null, (err) => {
-                 console.error('Error loading 3D model:', err);
-                  loadingOverlay.classList.add('hidden');
-               });
-            }
-            catch(error){
-                console.log('Error Loading Model', error);
-                 loadingOverlay.classList.add('hidden');
-            }
-        }
-        
+                }, null, null, (err) => {
+                     console.error('Error loading 3D model:', err);
+                    loadingOverlay.classList.add('hidden');enable tools until you have more credits.
+                    
+                    Write with Cascade
+                    Kick off a new project or make changes across your entire codebase
+                    
+                    Chat with Cascade
+                    Ask questions or request suggestions for your codebase or coding i
+                });
+           }
+           catch(error){
+               console.log('Error Loading Model', error);
+                loadingOverlay.classList.add('hidden');
+         }
+      }
+    
         // --- Fetch Fabrics ---
         async function fetchFabrics() {
             try {
@@ -497,155 +528,179 @@
                 const fabrics = await response.json();
                  fabrics.forEach(fabric => {
                     const option = document.createElement('option');
-                     option.value = fabric.image;
-                    option.text = fabric.name;
-                   fabricSelect.appendChild(option);
-                });
-            } catch (error) {
-               console.error('Error fetching fabrics:', error);
-            }
-        }
+                    option.value = fabric.image;
+                  option.text = fabric.name;
+                  fabricSelect.appendChild(option);
+              });
+           } catch (error) {
+             console.error('Error fetching fabrics:', error);
+          }
+      }
 
-        // --- Fetch Patterns ---
-        function fetchPatterns(){
+       // --- Fetch Patterns ---
+      function fetchPatterns(){
             const patterns = [
-              'pattern1.jpg',
-              'pattern2.jpg',
-              'pattern3.jpg',
-            ]
-
-           patterns.forEach(pattern => {
-             const img = document.createElement('img');
+               'pattern1.jpg',
+             'pattern2.jpg',
+               'pattern3.jpg',
+           ]
+          patterns.forEach(pattern => {
+               const img = document.createElement('img');
               img.src = `{% static 'core/images/' %}${pattern}`;
-              img.alt = `Pattern ${pattern}`;
-               img.className = 'texture-item';
-             const patternImage = document.createElement('img');
-            patternImage.src = `{% static 'core/images/' %}${pattern}`;
-             patternImage.dataset.pattern = pattern
+               img.alt = `Pattern ${pattern}`;
+              img.className = 'texture-item';
+               const patternImage = document.createElement('img');
+             patternImage.src = `{% static 'core/images/' %}${pattern}`;
+              patternImage.dataset.pattern = pattern
              img.appendChild(patternImage);
               patternPreviews.appendChild(img);
            });
-        }
-        
+       }
+    
         // --- Fabric and Color Change ---
-        fabricSelect.addEventListener('change', (e) => {
-            if(garment && garment.material){
-               const fabric = e.target.value;
-               garment.material.diffuseTexture = new BABYLON.Texture(`{% static 'core/images/' %}${fabric}`, scene);
-            }
-        });
-
-        colorPicker.addEventListener('input', (e) => {
-           if (garment && garment.material) {
-               garment.material.diffuseColor = BABYLON.Color3.FromHexString(e.target.value);
-           }
-        });
-       
-        // --- Pattern Change ---
-        patternPreviews.addEventListener('click', (e) => {
+       fabricSelect.addEventListener('change', (e) => {
            if(garment && garment.material){
+                const fabric = e.target.value;
+                garment.material.diffuseTexture = new BABYLON.Texture(`{% static 'core/images/' %}${fabric}`, scene);
+           }
+       });
+
+       colorPicker.addEventListener('input', (e) => {
+            if (garment && garment.material) {
+               garment.material.diffuseColor = BABYLON.Color3.FromHexString(e.target.value);
+          }
+       });
+      
+        // --- Pattern Change ---
+      patternPreviews.addEventListener('click', (e) => {
+            if(garment && garment.material){
              if(e.target.tagName === 'IMG' && e.target.parentElement.classList.contains('texture-item')){
-                const patternFile = e.target.dataset.pattern;
-               garment.material.diffuseTexture = new BABYLON.Texture(`{% static 'core/images/' %}${patternFile}`, scene);
+                   const patternFile = e.target.dataset.pattern;
+                  garment.material.diffuseTexture = new BABYLON.Texture(`{% static 'core/images/' %}${patternFile}`, scene);
              }
            }
        });
-   
-       // --- Model Adjustment ---
-       function applyTransformations(){
-           if (garment) {
+
+      // --- Model Adjustment ---
+      function applyTransformations(){
+          if (garment) {
               garment.rotation.x = parseFloat(rotateXSlider.value) * Math.PI / 180;
-              garment.rotation.y = parseFloat(rotateYSlider.value) * Math.PI / 180;
-              garment.rotation.z = parseFloat(rotateZSlider.value) * Math.PI / 180;
+               garment.rotation.y = parseFloat(rotateYSlider.value) * Math.PI / 180;
+                garment.rotation.z = parseFloat(rotateZSlider.value) * Math.PI / 180;
             
-              garment.scaling.x = parseFloat(scaleSlider.value);
-                garment.scaling.y = parseFloat(scaleSlider.value);
+                garment.scaling.x = parseFloat(scaleSlider.value);
+               garment.scaling.y = parseFloat(scaleSlider.value);
                 garment.scaling.z = parseFloat(scaleSlider.value);
             
                garment.position.x = parseFloat(positionXSlider.value);
-                garment.position.y = parseFloat(positionYSlider.value);
+               garment.position.y = parseFloat(positionYSlider.value);
                garment.position.z = parseFloat(positionZSlider.value);
            }
         }
-
+     
      [rotateXSlider, rotateYSlider, rotateZSlider, scaleSlider, positionXSlider, positionYSlider, positionZSlider].forEach(slider => {
           slider.addEventListener('input', applyTransformations);
+        });
+      
+      function updateMaterial() {
+         if (garment && garment.material) {
+            garment.material.metallic = parseFloat(metallicSlider.value);
+            garment.material.roughness = parseFloat(roughnessSlider.value);
+         }
+      }
+
+    [metallicSlider, roughnessSlider].forEach(slider => {
+        slider.addEventListener('input', updateMaterial);
       });
-       
-       // --- Prepare data to save to the backend ---
-       function getDesignData(){
+    
+       function updateTextureMapping(){
+          if(garment && garment.material && garment.material.diffuseTexture){
+            garment.material.diffuseTexture.uScale = parseFloat(repeatUSlider.value);
+            garment.material.diffuseTexture.vScale = parseFloat(repeatVSlider.value);
+         }
+      }
+ 
+      [repeatUSlider, repeatVSlider].forEach(slider => {
+          slider.addEventListener('input', updateTextureMapping);
+      });
+      
+     // --- Prepare data to save to the backend ---
+     function getDesignData(){
            if(garment){
               // Get Position, Rotation, Scale
                 let position = {
-                    x: garment.position.x,
+                   x: garment.position.x,
                     y: garment.position.y,
                     z: garment.position.z
                 };
-             
-                 let rotation = {
-                   x: garment.rotation.x,
-                   y: garment.rotation.y,
-                   z: garment.rotation.z
+               let rotation = {
+                  x: garment.rotation.x,
+                    y: garment.rotation.y,
+                  z: garment.rotation.z
+             }
+              
+               let scale = {
+                 x: garment.scaling.x,
+                    y: garment.scaling.y,
+                   z: garment.scaling.z
+               };
+               
+                let materialData = {};
+                if (garment.material) {
+                   materialData = {
+                        diffuseColor: garment.material.diffuseColor.toHexString(),
+                       texture: garment.material.diffuseTexture ? garment.material.diffuseTexture.url : null,
+                         metallic: garment.material.metallic,
+                       roughness: garment.material.roughness,
+                         uScale: garment.material.diffuseTexture ? garment.material.diffuseTexture.uScale: 1,
+                         vScale: garment.material.diffuseTexture ? garment.material.diffuseTexture.vScale: 1
+                    };
                }
-
-                let scale = {
-                    x: garment.scaling.x,
-                   y: garment.scaling.y,
-                    z: garment.scaling.z
-                };
-                
-               let materialData = {};
-               if (garment.material) {
-                 materialData = {
-                    diffuseColor: garment.material.diffuseColor.toHexString(),
-                      texture: garment.material.diffuseTexture ? garment.material.diffuseTexture.url : null
-                   };
-                }
-               return JSON.stringify({
+                return JSON.stringify({
                     position: position,
-                    rotation: rotation,
-                    scale: scale,
-                    material: materialData
+                     rotation: rotation,
+                     scale: scale,
+                     material: materialData
                 });
-            }
+          }
             else{
-                 return JSON.stringify({});
-            }
+               return JSON.stringify({});
+           }
         }
-        
+       
         function getMeasurements(){
            const chest = document.querySelector('input[name="chest"]').value;
             const waist = document.querySelector('input[name="waist"]').value;
-          const hip = document.querySelector('input[name="hip"]').value;
-          const length = document.querySelector('input[name="length"]').value;
-           
-          return JSON.stringify({
-             chest: chest,
-             waist: waist,
+           const hip = document.querySelector('input[name="hip"]').value;
+           const length = document.querySelector('input[name="length"]').value;
+          
+            return JSON.stringify({
+              chest: chest,
+              waist: waist,
               hip: hip,
              length: length
-         });
+           });
         }
-        
-        // --- Save project data ---
-       saveProjectButton.addEventListener('click', () => {
-            designDataInput.value = getDesignData();
+    
+       // --- Save project data ---
+        saveProjectButton.addEventListener('click', () => {
+           designDataInput.value = getDesignData();
           measurementsInput.value = getMeasurements();
             projectForm.submit();
-        });
-        
-        // --- Render Loop ---
-        engine.runRenderLoop(() => {
-            scene.render();
-         });
-   
-        // --- Resize Event ---
-        window.addEventListener('resize', () => {
-           engine.resize();
        });
        
-         // --- Initial Load ---
-        fetchFabrics();
+        // --- Render Loop ---
+        engine.runRenderLoop(() => {
+           scene.render();
+        });
+      
+      // --- Resize Event ---
+       window.addEventListener('resize', () => {
+           engine.resize();
+        });
+     
+        // --- Initial Load ---
+      fetchFabrics();
         fetchPatterns();
     });
 </script>
