@@ -5,6 +5,7 @@
 
 {% block content %}
 
+
 <!-- Hero Section -->
 <section class="hero">
     <div class="container">
@@ -19,15 +20,14 @@
                     <a href="{% url 'core:about' %}" class="btn btn-outline-light btn-lg">
                         <i class="fas fa-info-circle me-2"></i>Learn More
                     </a>
-                </div>
+               </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block animate-fade-in">
                 <img src="{% static 'core/images/3D_images.png' %}" alt="3D Fashion Design" class="img-fluid rounded-3">
             </div>
-        </div>
+       </div>
     </div>
 </section>
-
 <!-- Features Section -->
 <section class="features py-5">
     <div class="container">
@@ -37,16 +37,16 @@
                 <div class="card text-center">
                     <i class="fas fa-pencil-ruler fa-3x my-3 text-primary"></i>
                     <h3 class="card-title">Custom Design</h3>
-                    <p>Unleash your creativity with our powerful design tools.</p>
+                     <p>Unleash your creativity with our powerful design tools.</p>
                 </div>
             </div>
-            <div class="col-md-4">
+           <div class="col-md-4">
                 <div class="card text-center">
                     <i class="fas fa-cubes fa-3x my-3 text-secondary"></i>
                     <h3 class="card-title">3D Previews</h3>
-                    <p>Visualize your creations in stunning 3D before production.</p>
+                   <p>Visualize your creations in stunning 3D before production.</p>
                 </div>
-            </div>
+           </div>
             <div class="col-md-4">
                 <div class="card text-center">
                     <i class="fas fa-users fa-3x my-3 text-warning"></i>
@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-    </div>
+   </div>
 </section>
 
 <!-- Gallery Section -->
@@ -73,7 +73,7 @@
                 <img src="{% static 'core/images/gallery3.jpg' %}" class="img-fluid rounded" alt="Gallery Image 3">
             </div>
         </div>
-    </div>
+   </div>
 </section>
 
 <!-- Latest Projects Section -->
@@ -82,31 +82,31 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Latest Projects</h2>
             <a href="{% url 'core:project_list' %}" class="btn btn-outline-primary">
-                <i class="fas fa-th me-2"></i>View All Projects
-            </a>
+                 <i class="fas fa-th me-2"></i>View All Projects
+           </a>
         </div>
         <div class="row g-4">
             {% for project in latest_projects %}
                 <div class="col-md-4">
-                    <div class="card h-100">
+                  <div class="card h-100">
                         {% if project.image %}
                             <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
-                        {% else %}
+                         {% else %}
                             <img src="{% static 'core/images/project-placeholder.svg' %}" class="card-img-top" alt="Project placeholder">
-                        {% endif %}
-                        <div class="card-body">
+                       {% endif %}
+                       <div class="card-body">
                             <h5 class="card-title">{{ project.title }}</h5>
                             <p class="card-text">{{ project.description|truncatewords:20 }}</p>
-                            <a href="{% url 'core:project_detail' project.id %}" class="btn btn-outline-primary">View Details</a>
+                           <a href="{% url 'core:project_detail' project.id %}" class="btn btn-outline-primary">View Details</a>
                         </div>
-                    </div>
-                </div>
+                   </div>
+              </div>
             {% empty %}
-                <div class="col-12 text-center">
+               <div class="col-12 text-center">
                     <p>No projects available yet.</p>
                 </div>
-            {% endfor %}
-        </div>
+           {% endfor %}
+       </div>
     </div>
 </section>
 
@@ -114,7 +114,7 @@
 <section class="testimonials py-5">
     <div class="container">
         <h2 class="text-center mb-5">What Our Users Say</h2>
-        <div class="row g-4">
+      <div class="row g-4">
             <div class="col-md-6">
                 <div class="card p-4">
                     <p>"Ubiglu Afro helped me bring my designs to life! The platform is intuitive and the 3D previews are amazing."</p>
@@ -123,106 +123,106 @@
             </div>
             <div class="col-md-6">
                 <div class="card p-4">
-                    <p>"As a creator, I love the community aspect. Sharing ideas and collaborating has been incredible."</p>
+                   <p>"As a creator, I love the community aspect. Sharing ideas and collaborating has been incredible."</p>
                     <footer class="blockquote-footer">John Smith, Creator</footer>
-                </div>
+               </div>
             </div>
-        </div>
-    </div>
+       </div>
+  </div>
 </section>
 
 <!-- Blog Preview Section -->
 <section class="blog py-5 bg-light">
     <div class="container">
         <h2 class="text-center mb-5">Latest Articles</h2>
-        <div class="row g-4">
+         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card">
-                    <img src="{% static 'core/images/blog1.jpg' %}" class="card-img-top" alt="Blog 1">
-                    <div class="card-body">
+              <div class="card">
+                 <img src="{% static 'core/images/blog1.jpg' %}" class="card-img-top" alt="Blog 1">
+                   <div class="card-body">
                         <h5 class="card-title">5 Tips for Aspiring Designers</h5>
                         <p class="card-text">Learn how to kickstart your fashion journey with these essential tips.</p>
-                        <a href="#" class="btn btn-primary">Read More</a>
+                       <a href="#" class="btn btn-primary">Read More</a>
                     </div>
-                </div>
-            </div>
+               </div>
+          </div>
             <div class="col-md-4">
-                <div class="card">
-                    <img src="{% static 'core/images/blog2.jpg' %}" class="card-img-top" alt="Blog 2">
-                    <div class="card-body">
-                        <h5 class="card-title">The Future of African Fashion</h5>
-                        <p class="card-text">Explore how technology is shaping the future of the fashion industry.</p>
-                        <a href="#" class="btn btn-primary">Read More</a>
+              <div class="card">
+                   <img src="{% static 'core/images/blog2.jpg' %}" class="card-img-top" alt="Blog 2">
+                   <div class="card-body">
+                       <h5 class="card-title">The Future of African Fashion</h5>
+                       <p class="card-text">Explore how technology is shaping the future of the fashion industry.</p>
+                      <a href="#" class="btn btn-primary">Read More</a>
                     </div>
-                </div>
-            </div>
+               </div>
+          </div>
             <div class="col-md-4">
-                <div class="card">
-                    <img src="{% static 'core/images/blog3.jpg' %}" class="card-img-top" alt="Blog 3">
-                    <div class="card-body">
+              <div class="card">
+                   <img src="{% static 'core/images/blog3.jpg' %}" class="card-img-top" alt="Blog 3">
+                     <div class="card-body">
                         <h5 class="card-title">Showcasing African Culture</h5>
-                        <p class="card-text">Discover the rich heritage of African culture through fashion.</p>
+                       <p class="card-text">Discover the rich heritage of African culture through fashion.</p>
                         <a href="#" class="btn btn-primary">Read More</a>
-                    </div>
+                   </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+  
+   <!-- Additional Content -->
+   <!-- Our Mission Section -->
+  <section class="mission py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Mission</h2>
+           <p class="text-center mb-4">At Ubiglu Afro, our mission is to empower African fashion designers by providing them with cutting-edge tools and a vibrant community to showcase their talent. We believe in fostering creativity, innovation, and collaboration to drive the future of African fashion.</p>
+           <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-lightbulb fa-3x my-3 text-info"></i>
+                     <h3 class="card-title">Innovation</h3>
+                     <p>We bring the latest technology to fashion design, offering unparalleled creative possibilities.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-handshake fa-3x my-3 text-success"></i>
+                    <h3 class="card-title">Collaboration</h3>
+                    <p>We connect designers across the continent to inspire and support one another.</p>
+               </div>
+                <div class="col-md-4 text-center">
+                    <i class="fas fa-globe fa-3x my-3 text-danger"></i>
+                   <h3 class="card-title">Global Reach</h3>
+                     <p>We aim to elevate African fashion on the global stage, sharing its beauty and creativity worldwide.</p>
+                </div>
+           </div>
+       </div>
+  </section>
 
-<!-- Additional Content -->
-<!-- Our Mission Section -->
-<section class="mission py-5">
-    <div class="container">
-        <h2 class="text-center mb-5">Our Mission</h2>
-        <p class="text-center mb-4">At Ubiglu Afro, our mission is to empower African fashion designers by providing them with cutting-edge tools and a vibrant community to showcase their talent. We believe in fostering creativity, innovation, and collaboration to drive the future of African fashion.</p>
-        <div class="row g-4">
-            <div class="col-md-4 text-center">
-                <i class="fas fa-lightbulb fa-3x my-3 text-info"></i>
-                <h3 class="card-title">Innovation</h3>
-                <p>We bring the latest technology to fashion design, offering unparalleled creative possibilities.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <i class="fas fa-handshake fa-3x my-3 text-success"></i>
-                <h3 class="card-title">Collaboration</h3>
-                <p>We connect designers across the continent to inspire and support one another.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <i class="fas fa-globe fa-3x my-3 text-danger"></i>
-                <h3 class="card-title">Global Reach</h3>
-                <p>We aim to elevate African fashion on the global stage, sharing its beauty and creativity worldwide.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Contact Section -->
-<section class="contact py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Get in Touch</h2>
-        <p class="text-center mb-4">We would love to hear from you! Whether you have questions, suggestions, or just want to say hello, feel free to reach out.</p>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <form action="{% url 'core:contact' %}" method="post">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
+    <!-- Contact Section -->
+    <section class="contact py-5 bg-light">
+       <div class="container">
+            <h2 class="text-center mb-5">Get in Touch</h2>
+            <p class="text-center mb-4">We would love to hear from you! Whether you have questions, suggestions, or just want to say hello, feel free to reach out.</p>
+          <div class="row justify-content-center">
+               <div class="col-lg-8">
+                    <form action="{% url 'core:contact' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                             <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                         </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                             <label for="message" class="form-label">Message</label>
+                             <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+                         </div>
+                        <div class="d-grid">
+                           <button type="submit" class="btn btn-primary">Send Message</button>
+                         </div>
+                   </form>
+              </div>
+           </div>
+       </div>
+   </section>
 {% endblock %}

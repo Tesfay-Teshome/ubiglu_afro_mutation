@@ -447,7 +447,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
             # Add your payment processing logic here
             return Response({'message': 'Payment processed successfully'})
         except Exception as e:
-            return Response({'error': str(e)}, status=400)
+            return Response({'error': str(e)}, status=400)   
 
 @require_POST
 def save_design(request):
